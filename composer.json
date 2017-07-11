@@ -1,0 +1,11 @@
+{
+    "name": "root/questionnaire",
+    "require": {
+        "phpoffice/phpexcel": "^1.8",
+        "phpunit/phpunit": "^6.2",
+        "twig/twig": "^2.4"
+    },
+    "autoload": {
+        
+    }
+}
