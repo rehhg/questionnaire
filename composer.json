@@ -1,11 +1,13 @@
 {
     "name": "root/questionnaire",
     "require": {
-        "twig/twig": "^2.4",
+        "phpoffice/phpexcel": "^1.8",
         "phpunit/phpunit": "^6.2",
-        "phpoffice/phpexcel": "^1.8"
+        "twig/twig": "^2.4"
     },
     "autoload": {
-        
+        "psr-4": {
+            "App\\": "app"
+        }
     }
 }
