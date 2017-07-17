@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use DocBlockReader\Reader;
-use App\Core\App;
+use App\Core\Router;
 
 class UserController {
     
@@ -11,14 +11,7 @@ class UserController {
      * @method "POST"
      */
     public function createAction() {
-        $reader = new \DocBlockReader\Reader('\\App\\Controllers\\UserController', 'createAction');
-        $method = $reader->getParameter("method") . "<br />";
-        
-        if($_SERVER['REQUEST_METHOD'] != $method) {
-            header("HTTP/1.0 405 Method Not Allowed");
-            include_once App::getRootPath() . '/app/Config/405.php';
-            die();
-        }
+        Router::annotationReader('\\App\\Controllers\\UserController', 'createAction');
         
         echo 'This is UserController, Create method';
     }
@@ -27,31 +20,17 @@ class UserController {
      * @method "GET"
      */
     public function getAction($id) {
-        $reader = new \DocBlockReader\Reader('\\App\\Controllers\\UserController', 'getAction');
-        $method = $reader->getParameter("method");
-        
-        if($_SERVER['REQUEST_METHOD'] != $method) {
-            header("HTTP/1.0 405 Method Not Allowed");
-            include_once App::getRootPath() . '/app/Config/405.php';
-            die();
-        }
+        Router::annotationReader('\\App\\Controllers\\UserController', 'getAction');
         
         echo "This is UserController, Get method with id = $id";
     }
     
     /**
-     * @method "GET/POST"
+     * @method "GET"
+     * @method "POST"
      */
     public function filterAction($email, $role) {
-        $reader = new \DocBlockReader\Reader('\\App\\Controllers\\UserController', 'filterAction');
-        $method = $reader->getParameter("method");
-        $method = explode("/", $method);
-        
-        if(!in_array($_SERVER['REQUEST_METHOD'], $method)) {
-            header("HTTP/1.0 405 Method Not Allowed");
-            include_once App::getRootPath() . '/app/Config/405.php';
-            die();
-        }
+        Router::annotationReader('\\App\\Controllers\\UserController', 'filterAction');
         
         echo "E-mail is $email <br />Role is $role";
     }

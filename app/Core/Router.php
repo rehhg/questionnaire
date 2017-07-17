@@ -22,6 +22,28 @@ class Router {
             return trim($_SERVER['REQUEST_URI'], '/');
         }
     }
+    
+    /**
+     * Reads the annotation
+     */
+    public static function annotationReader($controllerName, $actionName) {
+        $reader = new \DocBlockReader\Reader($controllerName, $actionName);
+        $method = $reader->getParameter("method");
+ 
+        if(is_array($method)) {
+            if(!in_array($_SERVER['REQUEST_METHOD'], $method)) {
+                header("HTTP/1.0 405 Method Not Allowed");
+                include_once App::getRootPath() . '/app/Config/405.php';
+                die();
+            }
+        } else {
+            if($_SERVER['REQUEST_METHOD'] != $method) {
+                header("HTTP/1.0 405 Method Not Allowed");
+                include_once App::getRootPath() . '/app/Config/405.php';
+                die();
+            }
+        }
+    }
 
     /**
      * Run the router
