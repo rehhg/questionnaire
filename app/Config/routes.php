@@ -7,5 +7,5 @@
         
         basename(ROOT) . '/user/get/([0-9]+)' => 'user/get/$1',
         basename(ROOT) . '/user/create' => 'user/create',
-        'questionnaire'  => 'site/index',
+        'questionnaire'  => 'base/index',
     );
