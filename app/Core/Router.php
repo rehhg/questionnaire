@@ -4,6 +4,9 @@ namespace App\Core;
 
 class Router {
 
+    const CONTROLLERS_DIR = '/app/Controllers/';
+    const CONTROLLERS_DIR_NAMESPACE = "\\App\\Controllers\\";
+    
     private $routes;
 
     public function __construct() {
@@ -49,14 +52,13 @@ class Router {
                     $parameters = $segments;
                     
                     //include file of the controller
-                    $controllerFile = ROOT .'/app/Controllers/'.
-                            $controllerName.'.php';
+                    $controllerFile = ROOT . self::CONTROLLERS_DIR . $controllerName.'.php';
                     
                     if (file_exists($controllerFile)){
                         include_once($controllerFile);
                     }
                     
-                    $controllerFullName = "\\App\\Controllers\\" . $controllerName;
+                    $controllerFullName = self::CONTROLLERS_DIR_NAMESPACE . $controllerName;
 
                     //Create an object, call a method (Action)
                     $controllerObject = new $controllerFullName;
