@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use DocBlockReader\Reader;
+use App\Core\App;
 
 class UserController {
     
@@ -15,7 +16,7 @@ class UserController {
         
         if($_SERVER['REQUEST_METHOD'] != $method) {
             header("HTTP/1.0 405 Method Not Allowed");
-            include_once ROOT . '/app/Config/405.php';
+            include_once App::getRootPath() . '/app/Config/405.php';
             die();
         }
         
@@ -31,7 +32,7 @@ class UserController {
         
         if($_SERVER['REQUEST_METHOD'] != $method) {
             header("HTTP/1.0 405 Method Not Allowed");
-            include_once ROOT . '/app/Config/405.php';
+            include_once App::getRootPath() . '/app/Config/405.php';
             die();
         }
         
@@ -48,7 +49,7 @@ class UserController {
         
         if(!in_array($_SERVER['REQUEST_METHOD'], $method)) {
             header("HTTP/1.0 405 Method Not Allowed");
-            include_once ROOT . '/app/Config/405.php';
+            include_once App::getRootPath() . '/app/Config/405.php';
             die();
         }
         
