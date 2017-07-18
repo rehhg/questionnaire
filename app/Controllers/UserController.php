@@ -2,36 +2,36 @@
 
 namespace App\Controllers;
 
-use DocBlockReader\Reader;
-use App\Core\Router;
-
 class UserController {
     
     /**
+     * @template "app/Views/User/create.twig"
      * @method "POST"
      */
     public function createAction() {
-        Router::annotationReader('\\App\\Controllers\\UserController', 'createAction');
-        
-        echo 'This is UserController, Create method';
+        return [
+            
+        ];
     }
     
     /**
+     * @template "app/Views/User/get.twig"
      * @method "GET"
      */
     public function getAction($id) {
-        Router::annotationReader('\\App\\Controllers\\UserController', 'getAction');
-        
-        echo "This is UserController, Get method with id = $id";
+        return [
+            "id" => $id
+        ];
     }
     
     /**
-     * @method "GET"
-     * @method "POST"
+     * @template "app/Views/User/filter.twig"
+     * @method ["GET", "POST"]
      */
     public function filterAction($email, $role) {
-        Router::annotationReader('\\App\\Controllers\\UserController', 'filterAction');
-        
-        echo "E-mail is $email <br />Role is $role";
+        return [
+            "email" => $email,
+            "role" => $role
+        ];
     }
 }

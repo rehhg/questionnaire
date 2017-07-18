@@ -4,8 +4,14 @@ namespace App\Controllers;
 
 class BaseController {
     
+    /**
+     * @template "app/Views/index.php"
+     * @method "GET"
+     */
     public function indexAction() {
-        echo "<h1>The main page</h1>";
+        return [
+            
+        ];
     }
     
 }
