@@ -1,3 +1,4 @@
+<?php  header("HTTP/1.0 405 Method Not Allowed"); ?>
 <!DOCTYPE html>
 <html><head>
 <title>405 Not Allowed</title>

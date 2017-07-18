@@ -2,6 +2,9 @@
 
 namespace App\Core;
 
+use App\Config\Exception404;
+use App\Config\Exception405;
+
 class Router {
 
     const CONTROLLERS_DIR = '/app/Controllers/';
@@ -34,18 +37,14 @@ class Router {
     public static function annotationReader($controllerName, $actionName) {
         $reader = new \DocBlockReader\Reader($controllerName, $actionName);
         $params = $reader->getParameters();
-
+        
         if (is_array($params["method"])) {
             if (!in_array($_SERVER['REQUEST_METHOD'], $params["method"])) {
-                header("HTTP/1.0 405 Method Not Allowed");
-                include_once App::getRootPath() . '/app/Config/405.php';
-                return false;
+                throw new Exception405("Get 405.");
             }
         } else {
             if ($_SERVER['REQUEST_METHOD'] != $params["method"]) {
-                header("HTTP/1.0 405 Method Not Allowed");
-                include_once App::getRootPath() . '/app/Config/405.php';
-                return false;
+                throw new Exception405("Get 405.");
             }
         }
         
@@ -118,17 +117,13 @@ class Router {
         //Check for this request in routes.php
         foreach ($this->routes as $uriPattern => $path) {
 
-            $result = $this->searchUriRequest($uriPattern, $uri, $path);
-            
-            if ($result != null) {
-                break;
+            if($result = $this->searchUriRequest($uriPattern, $uri, $path)) {
+                 break;
             }
         }
         
         if (!isset($this->internalRoute)) {
-            header("HTTP/1.0 404 Not Found");
-            include App::getRootPath() . '/app/Config/404.php';
-            die();
+            throw new Exception404("Get 404.");
         } else {
             $this->getTemplate($this->data);
         }
