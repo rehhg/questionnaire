@@ -14,7 +14,7 @@ class Db extends \PDO {
      * @param
      * @return $instance;
      */
-    private static function getInstance() {
+    public static function getInstance() {
         
         $data = self::getDataFromYaml(self::$pathToConfigYml);
            
@@ -26,6 +26,11 @@ class Db extends \PDO {
         return self::$instance;
    
     }
+    
+    private function __clone() {}    
+    private function __construct() {}
+    private function __sleep() {}    
+    private function __wakeup() {}
     
     /*
      * Returns data from .yml files
