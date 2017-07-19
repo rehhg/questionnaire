@@ -9,6 +9,7 @@ class Router {
 
     const CONTROLLERS_DIR = '/app/Controllers/';
     const CONTROLLERS_DIR_NAMESPACE = "\\App\\Controllers\\";
+    const BASE_URL = '/questionnaire/';
 
     private $data;
     private $routes;
@@ -104,7 +105,17 @@ class Router {
         $reader = new \DocBlockReader\Reader($this->controllerFullName, $this->actionName);
         $template = $reader->getParameter("template");
 
-        include_once \App\Core\App::getRootPath() . "/$template";
+        $loader = new \Twig_Loader_Filesystem('app/Views');
+        $twig = new \Twig_Environment($loader);
+        
+        $function = new \Twig_Function('base_url', function ($url) {
+            
+            return self::BASE_URL . $url;
+        });
+        
+        $twig->addFunction($function);
+        
+        echo $twig->render($template, array("data" => $data));
     }
 
         /**

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{{ base_url('public/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ base_url('public/css/styles.css') }}" rel="stylesheet">
+    </head>
+    <body>
+
+        {% block content %} {% endblock %}
+        
+        <footer>
+         <div class="container">
+         
+            <div class="copy text-center">
+               Copyright 2017 <a href='#'>Website</a>
+            </div>
+            
+         </div>
+      </footer>
+        
+        <script src="https://code.jquery.com/jquery.js"></script>
+        <script src="{{ base_url('public/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ base_url('public/js/custom.js') }}"></script>
+    </body>
+</html>

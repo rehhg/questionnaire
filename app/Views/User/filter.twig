@@ -1,1 +1,25 @@
-{# empty Twig template #}
+{% extends "templates/user.twig" %}
+
+{% block content %}
+  	<div class="header">
+	     <div class="container">
+	        <div class="row">
+	           <div class="col-md-12">
+	              <!-- Logo -->
+	              <div class="logo">
+	                 <h1><a href="/questionnaire/">Questionnaire</a></h1>
+	              </div>
+	           </div>
+	        </div>
+	     </div>
+	</div>
+	<div class="page-content container">
+            <div class="row">
+                {% for item in data %}
+                <p>Users email is {{ data.email }}<br />And role is {{ data.role }}</p>
+                {% endfor %}
+                
+            </div>
+	</div>
+                
+{% endblock %}
