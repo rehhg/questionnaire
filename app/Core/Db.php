@@ -14,7 +14,7 @@ class Db extends \PDO {
      * @param
      * @return $instance;
      */
-    public static function getInstance() {
+    private static function getInstance() {
         
         $data = self::getDataFromYaml(self::$pathToConfigYml);
            
@@ -32,7 +32,7 @@ class Db extends \PDO {
      * 
      * @return $parsed;
      */
-    public static function getDataFromYaml($path) {
+    private static function getDataFromYaml($path) {
            
         $yaml = \App\Core\App::getRootPath() . '/' . $path;
         $parsed = yaml_parse_file($yaml);
