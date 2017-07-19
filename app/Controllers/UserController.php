@@ -5,7 +5,7 @@ namespace App\Controllers;
 class UserController {
     
     /**
-     * @template "app/Views/User/create.twig"
+     * @template "User/create.twig"
      * @method "POST"
      */
     public function createAction() {
@@ -15,7 +15,7 @@ class UserController {
     }
     
     /**
-     * @template "app/Views/User/get.twig"
+     * @template "User/get.twig"
      * @method "GET"
      */
     public function getAction($id) {
@@ -25,7 +25,7 @@ class UserController {
     }
     
     /**
-     * @template "app/Views/User/filter.twig"
+     * @template "User/filter.twig"
      * @method ["GET", "POST"]
      */
     public function filterAction($email, $role) {

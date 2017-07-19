@@ -5,7 +5,7 @@ namespace App\Controllers;
 class BaseController {
     
     /**
-     * @template "app/Views/index.php"
+     * @template "index.twig"
      * @method "GET"
      */
     public function indexAction() {
