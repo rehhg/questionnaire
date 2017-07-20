@@ -26,7 +26,7 @@ abstract class Model {
     }
     
     public function __isset($name) {
-        return $this->data[$name];
+        return isset($this->data[$name]);
     }
     
     public function __unset($name) {
