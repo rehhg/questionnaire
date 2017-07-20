@@ -7,7 +7,7 @@ use App\Core\Db;
 /**
  * The main Model
  */
-class Model {
+abstract class Model {
     
     protected $data;
     
