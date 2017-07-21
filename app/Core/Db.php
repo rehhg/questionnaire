@@ -2,7 +2,7 @@
 
 namespace App\Core;
 
-class Db extends \PDO {
+class Db {
     
     private static $instance;
     

@@ -1,8 +1,5 @@
 <?php
 
-ini_set('display errors', 1);
-error_reporting(E_ALL);
-
 require 'vendor/autoload.php';
 
 use App\Config\Exception404, App\Config\Exception405;
