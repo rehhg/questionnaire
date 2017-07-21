@@ -10,7 +10,7 @@ use App\Core\Db;
 abstract class Service {
     
     protected $Db;
-
+    
     public function __construct() {
         return $this->Db = Db::getInstance();
     }
