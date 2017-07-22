@@ -16,9 +16,9 @@ class UserService extends Service {
     }
     
     public function getUser($id, User $user = null) {
-        $name = $this->db->query("SELECT * FROM users WHERE id = $id")->fetch(\PDO::FETCH_ASSOC);
+        $user = $this->db->query("SELECT * FROM users WHERE id = $id")->fetch(\PDO::FETCH_OBJ);
         
-        return $user->$name;
+        return $user;
     }
     
     public function updateUser($id, User $user = null) {
