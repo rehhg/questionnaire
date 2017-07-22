@@ -12,13 +12,13 @@ class UserService extends Service {
             throw new \PDOException($query->errorInfo);
         }
         
-        return true;
+        return $user;
     }
     
-    public function getUser($id) {
-        $user = $this->db->query("SELECT * FROM users WHERE id = $id")->fetch(\PDO::FETCH_ASSOC);
+    public function getUser($id, User $user = null) {
+        $name = $this->db->query("SELECT * FROM users WHERE id = $id")->fetch(\PDO::FETCH_ASSOC);
         
-        return $user["name"];
+        return $user->$name;
     }
     
     public function updateUser($id, User $user = null) {
@@ -29,7 +29,7 @@ class UserService extends Service {
             throw new \PDOException($query->errorInfo);
         }
         
-        return true;
+        return $user;
         
     }
     
