@@ -6,10 +6,6 @@ use App\Config\Exception404, App\Config\Exception405;
 use App\Core\App;
 
 try{
-    $data = array("username" => "andriy", "email" => "e@mail.ua");
-    $a = new \App\Services\UserService();
-    var_dump($a->deleteUser(13));
-    
     $router = new \App\Core\Router();
     $router->run();
 }
