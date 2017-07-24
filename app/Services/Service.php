@@ -12,7 +12,7 @@ abstract class Service {
     protected $db;
     
     public function __construct() {
-        return $this->db = Db::getInstance();
+        $this->db = Db::getInstance();
     }
     
 }
