@@ -16,9 +16,15 @@ class UserService extends Service {
     }
     
     public function getUser(\User $user = null) {
-        $data = $this->db->query("SELECT * FROM users WHERE id = $user->id")->fetch(\PDO::FETCH_ASSOC);
+        $query = $this->db->prepare("SELECT * FROM users WHERE id = ?");
+        $query->bindParam(1, $user->id, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new \PDOException($this->getDbError($query));
+        }
         
-        return new \User($user);
+        $query->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return new \User($query);
     }
     
     public function updateUser(\User $user = null) {
@@ -34,7 +40,11 @@ class UserService extends Service {
     }
     
     public function deleteUser(\User $user = null) {
-        $this->db->query("DELETE FROM users WHERE id = $user->id");
+        $query = $this->db->prepare("DELETE FROM users WHERE id = ?");
+        $query->bindParam(1, $user->id, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new \PDOException($this->getDbError($query));
+        }
         
         return $user;
         
