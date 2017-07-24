@@ -9,35 +9,39 @@ class UserService extends Service {
         $query->bindParam(1, $user->username, \PDO::PARAM_STR);
         $query->bindParam(2, $user->email, \PDO::PARAM_STR);
         if(!$query->execute()) {
-            throw new \PDOException($query->errorInfo);
+            throw new \PDOException($this->getDbError($query));
         }
         
         return $user;
     }
     
-    public function getUser($id, \User $user = null) {
-        $user = $this->db->query("SELECT * FROM users WHERE id = $id")->fetch(\PDO::FETCH_OBJ);
+    public function getUser(\User $user = null) {
+        $data = $this->db->query("SELECT * FROM users WHERE id = $user->id")->fetch(\PDO::FETCH_ASSOC);
         
-        return $user;
+        return new \User($user);
     }
     
-    public function updateUser($id, \User $user = null) {
-        $query = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE id = $id");
+    public function updateUser(\User $user = null) {
+        $query = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE id = $user->id");
         $query->bindParam(1, $user->username, \PDO::PARAM_STR);
         $query->bindParam(2, $user->email, \PDO::PARAM_STR);
         if(!$query->execute()) {
-            throw new \PDOException($query->errorInfo);
+            throw new \PDOException($this->getDbError($query));
         }
         
         return $user;
         
     }
     
-    public function deleteUser($id) {
-        $this->db->query("DELETE FROM users WHERE id = $id");
+    public function deleteUser(\User $user = null) {
+        $this->db->query("DELETE FROM users WHERE id = $user->id");
         
-        return true;
+        return $user;
         
+    }
+    
+    protected function getDbError($query) {
+        return $query->errorInfo[2];
     }
     
 }
