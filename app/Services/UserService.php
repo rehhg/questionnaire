@@ -28,9 +28,10 @@ class UserService extends Service {
     }
     
     public function updateUser(\User $user = null) {
-        $query = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE id = $user->id");
+        $query = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
         $query->bindParam(1, $user->username, \PDO::PARAM_STR);
         $query->bindParam(2, $user->email, \PDO::PARAM_STR);
+        $query->bindParam(3, $user->id, \PDO::PARAM_INT);
         if(!$query->execute()) {
             throw new \PDOException($this->getDbError($query));
         }
