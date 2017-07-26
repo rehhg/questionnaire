@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Services;
+use App\Models\User;
 
 class UserService extends Service {
     
-    public function createUser(\User $user = null) {
+    public function createUser(User $user = null) {
         $query = $this->db->prepare("INSERT INTO users VALUES (NULL, ?, ?, NOW())");
-        $query->bindParam(1, $user->username, \PDO::PARAM_STR);
-        $query->bindParam(2, $user->email, \PDO::PARAM_STR);
+        $query->bindParam(1, $user->data["name"], \PDO::PARAM_STR);
+        $query->bindParam(2, $user->data["email"], \PDO::PARAM_STR);
         if(!$query->execute()) {
             throw new \PDOException($this->getDbError($query));
         }
@@ -15,23 +16,23 @@ class UserService extends Service {
         return $user;
     }
     
-    public function getUser(\User $user = null) {
+    public function getUser($id) {
         $query = $this->db->prepare("SELECT * FROM users WHERE id = ?");
-        $query->bindParam(1, $user->id, \PDO::PARAM_INT);
+        $query->bindParam(1, $id, \PDO::PARAM_INT);
         if(!$query->execute()) {
             throw new \PDOException($this->getDbError($query));
         }
         
-        $query->fetchAll(\PDO::FETCH_ASSOC);
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
         
-        return new \User($query);
+        return $data ? new User($data) : null;
     }
     
-    public function updateUser(\User $user = null) {
+    public function updateUser(User $user = null) {
         $query = $this->db->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
-        $query->bindParam(1, $user->username, \PDO::PARAM_STR);
-        $query->bindParam(2, $user->email, \PDO::PARAM_STR);
-        $query->bindParam(3, $user->id, \PDO::PARAM_INT);
+        $query->bindParam(1, $user->data['name'], \PDO::PARAM_STR);
+        $query->bindParam(2, $user->data['email'], \PDO::PARAM_STR);
+        $query->bindParam(3, $user->data['id'], \PDO::PARAM_INT);
         if(!$query->execute()) {
             throw new \PDOException($this->getDbError($query));
         }
@@ -49,10 +50,6 @@ class UserService extends Service {
         
         return $user;
         
-    }
-    
-    protected function getDbError($query) {
-        return $query->errorInfo[2];
     }
     
 }

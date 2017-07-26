@@ -14,12 +14,12 @@ class Db {
      * @param
      * @return $instance;
      */
-    public static function getInstance() {
+    public static function getInstance($env = 'dev') {
         
-        $data = self::getDataFromYaml(self::$pathToConfigYml);
+        $config = self::getDataFromYaml(self::$pathToConfigYml);
            
         if (!self::$instance) {
-            self::$instance = new \PDO($data["db_host"], $data["db_user"], $data["db_pass"]);
+            self::$instance = new \PDO($config[$env]["host"], $config[$env]["user"], $config[$env]["pass"]);
             self::$instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
        

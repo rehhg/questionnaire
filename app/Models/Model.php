@@ -9,9 +9,9 @@ use App\Core\Db;
  */
 abstract class Model {
     
-    protected $data;
+    public $data;
     
-    public function __construct($data) {
+    public function __construct($data = []) {
         
         $this->data = $data;
         
