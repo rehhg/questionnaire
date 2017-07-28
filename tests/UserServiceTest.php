@@ -22,12 +22,12 @@ class UserServiceTest extends TestCase {
         $this->deleteMethod();   
     }
     
-    public function deleteMethod() {
+    private function deleteMethod() {
         $query = self::$db->prepare("INSERT INTO users VALUES (2, 'ut_DELETE', 'DELETE@mail.ua', NOW())");
         $query->execute();
     }
     
-    public function createMethod() {
+    private function createMethod() {
         $query = self::$db->prepare("SELECT COUNT(*) FROM users");
         $query->execute();
         
@@ -38,7 +38,7 @@ class UserServiceTest extends TestCase {
         }
     }
     
-    public function updateMethod() {
+    private function updateMethod() {
         $query = self::$db->prepare("SELECT name, email FROM users WHERE id = 1");
         $query->execute();
         $data = $query->fetch(\PDO::FETCH_ASSOC);
