@@ -43,7 +43,7 @@ class Router {
             if (!in_array($_SERVER['REQUEST_METHOD'], $params["method"])) {
                 throw new Exception405("Get 405.");
             }
-        } else {
+        } elseif (!is_array($params["method"])) {
             if ($_SERVER['REQUEST_METHOD'] != $params["method"]) {
                 throw new Exception405("Get 405.");
             }

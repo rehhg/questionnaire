@@ -4,6 +4,9 @@
          colors="true"
          verbose="true"
          stopOnFailure="false">
+    <php>
+        <server name='REQUEST_METHOD' value='GET' />
+    </php>
     <testsuites>
         <testsuite name="Test suite">
             
@@ -11,4 +14,18 @@
             
         </testsuite>
     </testsuites>
+<!--    <logging>
+        <log
+            type="coverage-html"
+            target="./tmp/coverage/html/"
+            charset="UTF-8"
+            highlight="true"
+            lowUpperBound="60"
+            highLowerBound="90"
+        />
+        <log
+            type="coverage-clover"
+            target="./tmp/coverage/clover.xml"
+        />
+    </logging>-->
 </phpunit>
