@@ -10,11 +10,12 @@ use App\Core\Db;
 abstract class Service {
 
     protected $db;
+    protected $env = 'dev';
 
-    public function __construct() {
-        $this->db = Db::getInstance();
+    public function __construct($ut) {
+        $this->db = Db::getInstance($ut ? $ut : $this->env);
     }
-
+    
     protected function getDbError($query) {
         return $query->errorInfo[2];
     }

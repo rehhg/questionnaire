@@ -11,4 +11,4 @@ try{
 }
 catch (Exception404 $e) { include App::getRootPath() . '/app/Config/404.php'; }
 catch (Exception405 $e) { include App::getRootPath() . '/app/Config/405.php'; }
-catch (PDOException $e) { print_r($e->errorInfo); }
+catch (PDOException $e) { echo $e->getMessage(); }
