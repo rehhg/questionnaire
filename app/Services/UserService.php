@@ -61,7 +61,7 @@ class UserService extends Service {
             $query->bindParam(1, $id, \PDO::PARAM_INT);
             $query->execute();
             if($query->rowCount() == 0) {
-                throw new PDOException('Invalid query');
+                throw new PDOException("There are no user with id = $id");
             }
         } else {
             throw new PDOException('id need to be an integer');

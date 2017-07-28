@@ -17,29 +17,36 @@ class UserServiceTest extends TestCase {
     }
 
     protected function tearDown() {
-        // for delete method
-        $query1 = self::$db->prepare("INSERT INTO users VALUES (2, 'ut_DELETE', 'DELETE@mail.ua', NOW())");
-        $query1->execute();
+        $this->createMethod();
+        $this->updateMethod();
+        $this->deleteMethod();   
+    }
+    
+    public function deleteMethod() {
+        $query = self::$db->prepare("INSERT INTO users VALUES (2, 'ut_DELETE', 'DELETE@mail.ua', NOW())");
+        $query->execute();
+    }
+    
+    public function createMethod() {
+        $query = self::$db->prepare("SELECT COUNT(*) FROM users");
+        $query->execute();
         
-        // for update method
-        $query2 = self::$db->prepare("SELECT name, email FROM users WHERE id = 1");
-        $query2->execute();
-        $data = $query2->fetch(\PDO::FETCH_ASSOC);
-        
-        if(($data['name'] != 'ut_name') || ($data['email'] != 'ut_name@gmail.com')) {
-            $query2 = self::$db->prepare("UPDATE users SET name = 'ut_name', email = 'ut_name@gmail.com' WHERE id = 1");
-            $query2->execute();
-        }
-        
-        // for create method
-        $query3 = self::$db->prepare("SELECT COUNT(*) FROM users");
-        $query3->execute();
-        
-        $rows = $query3->fetchColumn();
+        $rows = $query->fetchColumn();
         
         if($rows > 2) {
             self::$db->query("DELETE FROM users WHERE id NOT IN (1, 2)");
-        }      
+        }
+    }
+    
+    public function updateMethod() {
+        $query = self::$db->prepare("SELECT name, email FROM users WHERE id = 1");
+        $query->execute();
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        
+        if(($data['name'] != 'ut_name') || ($data['email'] != 'ut_name@gmail.com')) {
+            $query = self::$db->prepare("UPDATE users SET name = 'ut_name', email = 'ut_name@gmail.com' WHERE id = 1");
+            $query->execute();
+        }
     }
 
     /**
@@ -75,32 +82,35 @@ class UserServiceTest extends TestCase {
             "email" => $email
         ]);
         
-        if (!$expectException) {
+        if ($expectException) {
+            $this->expectException(PDOException::class);
+        }
+        
+        try {
             $user = self::$userService->createUser($userData);
-            
             $query = self::$db->prepare("SELECT name, email FROM users WHERE name = ? AND email = ?");
             $query->bindParam(1, $user->name, \PDO::PARAM_STR);
             $query->bindParam(2, $user->email, \PDO::PARAM_STR);
             $query->execute();
-            
+
             $result = $query->fetch(\PDO::FETCH_ASSOC);
-            
+
             $this->assertEquals($username, $result["name"]);
             $this->assertEquals($email, $result["email"]);
-        } else {
-            $this->expectException(PDOException::class);
-            $user = self::$userService->createUser($userData);
-            $this->expectExceptionMessage($expectException);
-        }
+        } catch (PDOException $ex) {
+            $this->assertContains($expectException, $ex->getMessage());
+            throw $ex;
+        } 
+
     }
     
     public function createUserProvider() {
         return [
             //expectExc,                      username,     email
             [false,                           'ut_name222', 'ut_222name@gmail.com'],
-            ["email can't be null",           'ut_name222', null],
-            ["name can't be null",            null,         'ut_222name@gmail.com'],
-            ["name and email can't be null",  null,         null]
+            ["'email' cannot be null",           'ut_name222', null],
+            ["'name' cannot be null",            null,         'ut_222name@gmail.com'],
+            ["'name' cannot be null",  null,         null]
         ];
     }
     
@@ -114,9 +124,12 @@ class UserServiceTest extends TestCase {
             "id" => 1
         ]);
         
-        if (!$expectException) {
+        if($expectException) {
+            $this->expectException(PDOException::class);
+        }
+        
+        try {
             $user = self::$userService->updateUser($userData);
-            
             $query = self::$db->prepare("SELECT name, email FROM users WHERE name = ? AND email = ?");
             $query->bindParam(1, $user->name, \PDO::PARAM_STR);
             $query->bindParam(2, $user->email, \PDO::PARAM_STR);
@@ -126,20 +139,20 @@ class UserServiceTest extends TestCase {
             
             $this->assertEquals($username, $result["name"]);
             $this->assertEquals($email, $result["email"]);
-        } else {
-            $this->expectException(PDOException::class);
-            $user = self::$userService->updateUser($userData);
-            $this->expectExceptionMessage($expectException);
+        } catch (Exception $ex) {
+            $this->assertContains($expectException, $ex->getMessage());
+            throw $ex;
         }
+        
     }
     
     public function updateUserProvider() {
         return [
             //expectExc,                      username,     email
             [false,                           'ut_name1',   'ut_name1@gmail.com'],
-            ["email can't be null",           'ut_name1',   null],
-            ["name can't be null",            null,         'ut_name1@gmail.com'],
-            ["name and email can't be null",  null,         null]
+            ["'email' cannot be null",           'ut_name1',   null],
+            ["'name' cannot be null",            null,         'ut_name1@gmail.com'],
+            ["'name' cannot be null",  null,         null]
         ];
     }
 
@@ -147,23 +160,26 @@ class UserServiceTest extends TestCase {
      * @dataProvider deleteUserProvider
     */
     public function testDeleteUser($expectException, $id) {
-        if (!$expectException) {
+        if($expectException) {
+            $this->expectException(PDOException::class);
+        }
+        
+        try {
             $user = self::$userService->deleteUser($id);
             $this->assertTrue($user);
-        } else {
-            $this->expectException(PDOException::class);
-            $user = self::$userService->deleteUser($id);
-            $this->expectExceptionMessage($expectException);
+        } catch (Exception $ex) {
+            $this->assertContains($expectException, $ex->getMessage());
+            throw $ex;
         }
     }
     
     public function deleteUserProvider() {
         return [
-            //expectExc,              id
-            [false,                   2],
-            ['Invalid number',        0256],
-            ['String given',          'hello'],
-            ['NULL given',            null]
+            //expectExc,                          id
+            [false,                               2],
+            ['There are no user with id',        0256],
+            ['id need to be an integer',          'hello'],
+            ['id need to be an integer',            null]
         ];
     }
     

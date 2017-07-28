@@ -8,13 +8,16 @@ class RouterTest extends TestCase {
      * @dataProvider annotationReaderProvider
      */
     public function testAnnotationReader($expectException, $controllerName, $actionName) {
-        if(!$expectException){
+        if ($expectException) {
+            $this->expectException(App\Config\Exception405::class);
+        }
+        
+        try {
             $read = \App\Core\Router::annotationReader($controllerName, $actionName);
             $this->assertTrue($read);
-        } else {
-            $this->expectException(\App\Config\Exception405::class);
-            $read = \App\Core\Router::annotationReader($controllerName, $actionName);
-            $this->expectExceptionMessage("Forbidden 405");
+        } catch (Exception $ex) {
+            $this->assertContains($expectException, $ex->getMessage());
+            throw $ex;
         }
     }
     
@@ -22,7 +25,7 @@ class RouterTest extends TestCase {
         return [
             [false, "\App\Controllers\UserController", "getAction"],
             [false, "\App\Controllers\BaseController", "indexAction"],
-            "Forbidden 405" => [true, "\App\Controllers\UserController", "createAction"]
+            ['Get 405', "\App\Controllers\UserController", "createAction"]
         ];
     }
     
