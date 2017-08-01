@@ -106,14 +106,23 @@ class Router {
         $template = $reader->getParameter("template");
 
         $loader = new \Twig_Loader_Filesystem('app/Views');
-        $twig = new \Twig_Environment($loader);
+        $twig = new \Twig_Environment($loader, array(
+            'debug' => true
+        ));
         
-        $function = new \Twig_Function('base_url', function ($url) {
+        $base_url = new \Twig_Function('base_url', function ($url) {
             
             return self::BASE_URL . $url;
         });
         
-        $twig->addFunction($function);
+        $urlPlusId = new \Twig_Function('urlPlusId', function ($url, $id) {
+        
+            return $url . '/' . $id;
+        });
+        
+        $twig->addFunction($base_url);
+        $twig->addFunction($urlPlusId);
+        $twig->addExtension(new \Twig_Extension_Debug());
         
         echo $twig->render($template, array("data" => $data));
     }

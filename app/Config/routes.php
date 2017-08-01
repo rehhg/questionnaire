@@ -8,5 +8,7 @@
         
         basename(App::getRootPath()) . '/user/get/([0-9]+)' => 'user/get/$1',
         basename(App::getRootPath()) . '/user/create' => 'user/create',
-        'questionnaire'  => 'base/index',
+        basename(App::getRootPath()) . '/user/update/([0-9]+)' => 'user/update/$1',
+        basename(App::getRootPath()) . '/user/userslist' => 'user/list',
+        '/questionnaire/'  => 'base/index',
     );
