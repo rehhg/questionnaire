@@ -6,7 +6,7 @@ class BaseController {
     
     /**
      * @template "index.twig"
-     * @method "GET"
+     * @method ["GET"]
      */
     public function indexAction() {
         return [

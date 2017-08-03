@@ -40,7 +40,7 @@
                 <div class="panel-heading">
                     <div class="panel-title">Users list</div>
                     <div class="panel-options">
-                        <a href="{{ base_url('user/create') }}"><button class="btn btn-primary btn-sm">
+                        <a href="/user/create"><button class="btn btn-primary btn-sm">
                             <span class="glyphicon glyphicon-plus"></span> NEW USER</button>
                         </a>
                     </div>
@@ -69,7 +69,7 @@
                                         <span class="glyphicon glyphicon-trash"></span></a>
                                 </td>
                                 <td>
-                                    <a href="{{ urlPlusId(base_url('user/update'), item.id_user) }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a href="{{ urlPlusId('/user/update', item.id_user) }}"><span class="glyphicon glyphicon-pencil"></span></a>
                                 </td>
                             </tr>
                             {% endfor %}
