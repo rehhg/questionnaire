@@ -9,7 +9,6 @@ class Router {
 
     const CONTROLLERS_DIR = '/app/Controllers/';
     const CONTROLLERS_DIR_NAMESPACE = "\\App\\Controllers\\";
-    const BASE_URL = '/questionnaire/';
 
     private $data;
     private $routes;
@@ -57,7 +56,6 @@ class Router {
      */
     private function searchUriRequest($uriPattern, $uri, $path) {
         if (preg_match("~^$uriPattern$~", $uri)) {
-
             $this->controllerFullName = $this->parseRoute($uriPattern, $path, $uri);
 
             //Create an object, call a method (Action)
@@ -107,27 +105,28 @@ class Router {
 
         $loader = new \Twig_Loader_Filesystem('app/Views');
         $twig = new \Twig_Environment($loader);
+
+        $urlPlusId = new \Twig_Function('urlPlusId', function ($url, $id) {
         
-        $function = new \Twig_Function('base_url', function ($url) {
-            
-            return self::BASE_URL . $url;
+            return $url . '/' . $id;
         });
         
-        $twig->addFunction($function);
+        $twig->addFunction($urlPlusId);
+        $twig->addExtension(new \Twig_Extension_Debug());
         
         echo $twig->render($template, array("data" => $data));
     }
 
-        /**
+    /**
      * Run the router
      */
     public function run() {
         $result = null;
         $uri = $this->getURI();
-
+        
         //Check for this request in routes.php
         foreach ($this->routes as $uriPattern => $path) {
-
+            
             if($result = $this->searchUriRequest($uriPattern, $uri, $path)) {
                  break;
             }
