@@ -17,7 +17,7 @@ class UserService extends Service {
         
         return $data;
     }
-    
+
     public function createUser(User $user = null) {
         $query = $this->db->prepare("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW(), 0)");
         $query->bindParam(1, $user->firstname, \PDO::PARAM_STR);
@@ -75,9 +75,6 @@ class UserService extends Service {
         
     }
     
-    /**
-     * @Route("/questionnaire/user/delete/{id_user}", name="delete")
-     */
     public function deleteUser($id_user) {
         if(gettype($id_user) === 'integer'){
             $query = $this->db->prepare("DELETE FROM users WHERE id_user = ?");

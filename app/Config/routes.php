@@ -7,6 +7,7 @@
         'user/get/([0-9]+)' => 'user/get/$1',
         'user/create' => 'user/create',
         'user/update/([0-9]+)' => 'user/update/$1',
+        'user/delete/([0-9]+)' => 'user/delete/$1',
         'user/userslist' => 'user/list',
         ''  => 'base/index',
     );
