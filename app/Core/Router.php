@@ -104,18 +104,17 @@ class Router {
         $template = $reader->getParameter("template");
 
         $loader = new \Twig_Loader_Filesystem('app/Views');
-        $twig = new \Twig_Environment($loader, array(
-            'debug' => true
-        ));
+
+        $twig = new \Twig_Environment($loader);
 
         $urlPlusId = new \Twig_Function('urlPlusId', function ($url, $id) {
-
+        
             return $url . '/' . $id;
         });
-
+        
         $twig->addFunction($urlPlusId);
         $twig->addExtension(new \Twig_Extension_Debug());
-
+        
         echo $twig->render($template, array("data" => $data));
     }
 
@@ -125,12 +124,13 @@ class Router {
     public function run() {
         $result = null;
         $uri = $this->getURI();
-
+        
         //Check for this request in routes.php
         foreach ($this->routes as $uriPattern => $path) {
+            
+            if($result = $this->searchUriRequest($uriPattern, $uri, $path)) {
+                 break;
 
-            if ($result = $this->searchUriRequest($uriPattern, $uri, $path)) {
-                break;
             }
         }
 
