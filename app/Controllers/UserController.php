@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use Exception;
 use App\Core\App;
 use App\Models\User;
 use App\Services\UserService;
@@ -54,21 +53,32 @@ class UserController {
      */
     public function createAction() {
         if (isset($_POST['create']) && !empty($_POST)) {
-            $this->user->firstname = App::clean($_POST['firstname']);
-            $this->user->lastname = App::clean($_POST['lastname']);
-            $this->user->email = App::clean($_POST['email']);
-            $this->user->username = App::clean($_POST['username']);
-            $this->user->user_role = App::clean($_POST['user_role']);
+            $errors = array();
+            
+            !empty($_POST['firstname']) ? 
+                $this->user->firstname = App::clean($_POST['firstname']) : $errors[] = 'Please enter firstname';
+            !empty($_POST['lastname']) ? 
+                $this->user->lastname = App::clean($_POST['lastname']) : $errors[] = 'Please enter lastname';
+            !empty($_POST['email']) ? 
+                $this->user->email = App::clean($_POST['email']) : $errors[] = 'Please enter email';
+            !empty($_POST['username']) ? 
+                $this->user->username = App::clean($_POST['username']) : $errors[] = 'Please enter username';
+            !empty($_POST['user_role']) ? 
+                $this->user->user_role = App::clean($_POST['user_role']) : $errors[] = 'Please enter user_role';
 
-            if ($_POST['password'] === $_POST['confirm_password']) {
+            if ($_POST['password'] === $_POST['confirm_password'] 
+                    && isset($_POST['password']) && isset($_POST['confirm_password'])) {
                 $this->user->password = sha1(App::clean($_POST['password']));
             } else {
-                throw Exception('Passwords did not match');
+                $errors[] = "Passwords didn't match";
             }
 
-            $newUser = $this->userService->createUser($this->user);
-
-            return $newUser;
+            if(empty($errors)){
+                $newUser = $this->userService->createUser($this->user);
+                return $newUser;
+            } else {            
+                return $errors;
+            }
         }
     }
 

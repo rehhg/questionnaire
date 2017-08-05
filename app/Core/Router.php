@@ -105,17 +105,26 @@ class Router {
 
         $loader = new \Twig_Loader_Filesystem('app/Views');
 
-        $twig = new \Twig_Environment($loader);
+        $twig = new \Twig_Environment($loader, array(
+            'debug' => true
+        ));
 
         $urlPlusId = new \Twig_Function('urlPlusId', function ($url, $id) {
-        
             return $url . '/' . $id;
         });
         
+        $isObject = new \Twig_SimpleTest('object', function ($value) {
+            return is_object($value);
+        });
+
         $twig->addFunction($urlPlusId);
+        $twig->addTest($isObject);
         $twig->addExtension(new \Twig_Extension_Debug());
         
-        echo $twig->render($template, array("data" => $data));
+        echo $twig->render($template, array(
+            "data" => $data,
+            "post" => $_POST
+            ));
     }
 
     /**

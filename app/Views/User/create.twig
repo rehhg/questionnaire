@@ -10,42 +10,55 @@
             <div class="panel-body">
                 <form action="" method="POST">
                     <fieldset>
+                        
+                        {% if data is object %}
+                            <div class="alert alert-success">
+                                You successfully created a new user!
+                            </div>
+                        {% elseif data != null %}
+                            <div class="alert alert-danger">
+                                {% for item in data %}
+                                    {{ item }}.<br />
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
                         <div class="form-group">
                             <label>Username*</label>
-                            <input class="form-control" placeholder="Username" type="text" name="username">
+                            <input class="form-control" placeholder="Username" type="text" name="username" value="{{ post.username }}">
                         </div>
                         <div class="form-group">
                             <label>Email*</label>
-                            <input class="form-control" placeholder="Email" type="text" name="email">
+                            <input class="form-control" placeholder="Email" type="text" name="email" value="{{ post.email }}">
                         </div>
                         <div class="form-group">
                             <label>Firstname*</label>
-                            <input class="form-control" placeholder="Firstname" type="text" name="firstname">
+                            <input class="form-control" placeholder="Firstname" type="text" name="firstname" value="{{ post.firstname }}">
                         </div>
                         <div class="form-group">
                             <label>Lastname*</label>
-                            <input class="form-control" placeholder="Lastname" type="text" name="lastname">
+                            <input class="form-control" placeholder="Lastname" type="text" name="lastname" value="{{ post.lastname }}">
                         </div>
                         <div class="form-group">
                             <label>Password*</label>
-                            <input class="form-control" placeholder="Password" type="password" name="password">
+                            <input class="form-control" placeholder="Password" type="password" name="password" value="{{ post.password }}">
                         </div>
                         <div class="form-group">
                             <label>Confirm Password*</label>
-                            <input class="form-control" placeholder="Confirm Password" type="password" name="confirm_password">
+                            <input class="form-control" placeholder="Confirm Password" type="password" name="confirm_password" value="{{ post.confirm_password }}">
                         </div>
                         <div class="form-group">
                             <label>User role</label>
                             <select name="user_role">
-                                <option value="Admin" {% if data.user_role == 'Admin' %} selected="selected" {% endif %}>Admin</option>
-                                <option value="Manager" {% if data.user_role == 'Manager' %} selected="selected" {% endif %}>Manager</option>
-                                <option value="Employee" {% if data.user_role == 'Employee' %} selected="selected" {% endif %}>Employee</option>
+                                <option value="Admin" {% if post.user_role == 'Admin' %} selected="selected" {% endif %}>Admin</option>
+                                <option value="Manager" {% if post.user_role == 'Manager' %} selected="selected" {% endif %}>Manager</option>
+                                <option value="Employee" {% if post.user_role == 'Employee' %} selected="selected" {% endif %}>Employee</option>
                             </select>
                         </div>
                     </fieldset>
                     <div>
-                        <button class="btn btn-primary pull-right" style="margin: 0 2px" name="create">CREATE</button>
-                        <button class="btn btn-primary pull-right" style="margin: 0 2px" name="cancel">CANCEL</button>
+                        <button type="submit" class="btn btn-primary pull-right" style="margin: 0 2px" name="create">CREATE</button>
+                        <button type="reset" class="btn btn-primary pull-right" style="margin: 0 2px" name="cancel">CANCEL</button>
                     </div>
                 </form>
             </div>
