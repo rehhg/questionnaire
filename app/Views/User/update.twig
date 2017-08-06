@@ -10,9 +10,13 @@
             <div class="panel-body">
                 <form action="" method="POST">
                     <fieldset>
-                        {% for item in data.error %}
-                        <span class="alert alert-warning">{{ data.error }}</span>
-                        {% endfor %}
+                        {% if data.errors %}
+                            <div class="alert alert-danger">
+                                {% for item in data.errors %}
+                                    {{ item }}.<br />
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <div class="form-group">
                             <label>Username*</label>
                             <input class="form-control" placeholder="Username" type="text" name="username" value="{{ data.username }}">
