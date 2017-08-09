@@ -2,18 +2,15 @@
 
 namespace App\Controllers;
 
-use App\Core\App;
 use App\Models\User;
 use App\Services\UserService;
 
-class UserController {
+class UserController extends BaseController {
 
     private $userService;
-    private $user;
 
     public function __construct() {
         $this->userService = new UserService('dev');
-        $this->user = new User();
     }
 
     /**
@@ -53,30 +50,13 @@ class UserController {
      */
     public function createAction() {
         if (isset($_POST['create']) && !empty($_POST)) {
-            $errors = array();
-            
-            !empty($_POST['firstname']) ? 
-                $this->user->firstname = App::clean($_POST['firstname']) : $errors[] = 'Please enter firstname';
-            !empty($_POST['lastname']) ? 
-                $this->user->lastname = App::clean($_POST['lastname']) : $errors[] = 'Please enter lastname';
-            !empty($_POST['email']) ? 
-                $this->user->email = App::clean($_POST['email']) : $errors[] = 'Please enter email';
-            !empty($_POST['username']) ? 
-                $this->user->username = App::clean($_POST['username']) : $errors[] = 'Please enter username';
-            !empty($_POST['user_role']) ? 
-                $this->user->user_role = App::clean($_POST['user_role']) : $errors[] = 'Please enter user_role';
-
-            if ($_POST['password'] === $_POST['confirm_password'] 
-                    && !empty($_POST['password']) && !empty($_POST['confirm_password'])) {
-                $this->user->password = sha1(App::clean($_POST['password']));
-            } else {
-                $errors[] = "Passwords didn't match";
-            }
-
+            $user = new User($_POST);
+            $errors = $this->validate($user);
+                    
             if(empty($errors)){
-                $newUser = $this->userService->createUser($this->user);
+                $newUser = $this->userService->createUser($user);
                 return $newUser;
-            } else {            
+            } else {
                 return $errors;
             }
         }
@@ -89,27 +69,18 @@ class UserController {
     public function updateAction($id) {
         $id_user = intval($id);
         $userToUpdate = $this->userService->getUser($id_user);
-
+        
         if (isset($_POST['update']) && $userToUpdate && !empty($_POST)) {
-            $errors = [];
-            
-            !empty($_POST['firstname']) ? 
-                $userToUpdate->firstname = App::clean($_POST['firstname']) : $errors[] = "Firstname can't be empty";
-            !empty($_POST['lastname']) ?
-                $userToUpdate->lastname = App::clean($_POST['lastname']) : $errors[] = "Lastname can't be empty";
-            !empty($_POST['email']) ? 
-                $userToUpdate->email = App::clean($_POST['email']) : $errors[] = "Email can't be empty";
-            !empty($_POST['username']) ? 
-                $userToUpdate->username = App::clean($_POST['username']) : $errors[] = "Username can't be empty";
-            !empty($_POST['user_role']) ? 
-                $userToUpdate->user_role = App::clean($_POST['user_role']) : $errors[] = "Please enter user_role";
-            
-            if ($_POST['password'] === $_POST['confirm_password'] 
-                    && !empty($_POST['password']) && !empty($_POST['confirm_password'])) {
-                $userToUpdate->password = sha1(App::clean($_POST['password']));
-            } else {
-                $errors[] = "Passwords didn't match";
+            foreach($_POST as $key => $value) {
+                $userToUpdate->$key = $value;
             }
+            
+            if($_POST['password'] !== $_POST['confirm_password']) {
+                $userToUpdate->password = sha1($_POST['password']);
+                $userToUpdate->confirm_password = sha1($_POST['confirm_password']);
+            }
+
+            $errors = $this->validate($userToUpdate);
 
             if(empty($errors)) {
                 $updateUser = $this->userService->updateUser($userToUpdate);

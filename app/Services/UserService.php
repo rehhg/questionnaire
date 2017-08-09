@@ -13,9 +13,16 @@ class UserService extends Service {
             throw new PDOException($this->getDbError($query));
         }
         
-        $data = $query->fetchAll(\PDO::FETCH_OBJ);
+        $data = $query->fetchAll(\PDO::FETCH_ASSOC);
         
-        return $data;
+        $users = [];
+        
+        foreach($data as $value) {
+            $user = new User($value);
+            $users[] = $user;
+        }
+
+        return $users;
     }
 
     public function createUser(User $user = null) {
