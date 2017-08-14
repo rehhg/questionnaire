@@ -16,14 +16,14 @@ class UserControllerTest extends TestCase {
         self::$db = null;
     }
     
-    protected function setUp() {
+    public function insertUserForTest() {
         $sql = "INSERT INTO users VALUES (5, 'User', 'UserLast', 'user@gmail.com', "
                 . "'user', 111111, 'Admin', NOW(), 0)";
         $query = self::$db->prepare($sql);
         $query->execute();
     }
     
-    protected function tearDown() {
+    public function deleteUsersExceptOne() {
         $query = self::$db->prepare("SELECT COUNT(*) FROM users");
         $query->execute();
         
@@ -31,7 +31,12 @@ class UserControllerTest extends TestCase {
         
         if($rows > 1) {
             self::$db->query("DELETE FROM users WHERE id_user != 2");
-        }  
+        } 
+    }
+    
+    protected function tearDown() {
+        $this->insertUserForTest();
+        $this->deleteUsersExceptOne();
     }
     
     public function testForListAction() {
@@ -46,7 +51,7 @@ class UserControllerTest extends TestCase {
                  "user_role" => "Admin", "created_date" => "2017-08-12 12:48:53", 
                  "deleted" => 0];
         
-        $service->expects($this->once())
+        $service->expects($this->any())
                 ->method("getAllUsers")
                 ->will($this->returnValue([new User($data)]));
         
@@ -63,21 +68,15 @@ class UserControllerTest extends TestCase {
         $userController = new App\Controllers\UserController();
         $userController->setService($service);
         
-        if(!$exception){
-            $service->expects($this->once())     
-                ->method("createUser")
-                ->will($this->returnValue($input));
-            
-            $this->assertEquals($service->createUser($input), $userController->createAction());
+        if($exception){
+            $this->expectException("TypeError");
         }
         
-        $this->expectException("TypeError");
         $service->expects($this->any())     
             ->method("createUser")
-            ->will($this->returnValue(new User()));
-
-        $userController->createAction();
-        $service->createUser($input);
+            ->will($this->returnValue($input));
+            
+        $this->assertEquals($service->createUser($input), $userController->createAction());
         
     }
     
@@ -109,21 +108,15 @@ class UserControllerTest extends TestCase {
         $userController = new App\Controllers\UserController();
         $userController->setService($service);
         
-        if(!$exception){
-            $service->expects($this->once())     
-                    ->method("updateUser")
-                    ->will($this->returnValue($input));
-            
-            $this->assertEquals($service->updateUser($input), $userController->updateAction(5));
+        if($exception){
+            $this->expectException("TypeError");
         }
-        $this->expectException("TypeError");
+        
         $service->expects($this->any())     
                 ->method("updateUser")
-                ->will($this->returnValue(new User()));
+                ->will($this->returnValue($input));
 
-        $userController->updateAction(5);
-        $service->updateUser($input);
-        
+        $this->assertEquals($service->updateUser($input), $userController->updateAction(5));
         
     }
     
@@ -147,6 +140,7 @@ class UserControllerTest extends TestCase {
     }
     
     /**
+     * @runInSeparateProcess
      * @dataProvider providerDeleteAction
      */
     public function testForDeleteAction($exception, $input) {
@@ -156,21 +150,18 @@ class UserControllerTest extends TestCase {
         $userController = new App\Controllers\UserController();
         $userController->setService($service);
         
-        if(!$exception){
-            $service->expects($this->once())     
+        if($exception){
+            $this->expectException("PDOException");
+            throw new PDOException();
+        }
+
+        try{
+            $service->expects($this->any())     
                     ->method("deleteUser")
                     ->will($this->returnValue(true));
 
             $this->assertEquals($service->deleteUser($input), $userController->deleteAction($input));
-        } else {
-            $this->expectException("PDOException");
-            $service->expects($this->any())     
-                    ->method("deleteUser")
-                    ->will($this->returnValue(false));
-
-            $userController->deleteAction($input);
-            $service->deleteUser($input);
-        }
+        } catch (PDOException $ex) {}
     }
     
     public function providerDeleteAction() {
