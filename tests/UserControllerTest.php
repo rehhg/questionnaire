@@ -83,9 +83,10 @@ class UserControllerTest extends TestCase {
         if(!$exception){
             $service->expects($this->once())     
                     ->method("updateUser")
-                    ->will($this->returnCallback('getArgument'));
+                    ->will($this->returnValue($input));
 
-            $userController->updateAction($service->updateUser($input));
+            $user = $service->updateUser($input);
+            $userController->updateAction($user->id_user);
         } else {
             $this->expectException("TypeError");
             $service->expects($this->any())     
@@ -100,7 +101,7 @@ class UserControllerTest extends TestCase {
     public function providerUpdateAction() {
         return [
             // exception    input     
-            [false,         new User()],
+            [false,         new User(["id_user" => 4])],
             [true,          1],
             [true,          true],
             [true,          'sdfdg']
@@ -179,9 +180,4 @@ class UserControllerTest extends TestCase {
         ];
     }
     
-}
-
-function getArgument() {
-    $args = func_get_args();
-    return $args;
 }
