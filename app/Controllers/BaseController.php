@@ -7,7 +7,7 @@ use App\Services\Service;
 
 class BaseController {
 
-    private $service;
+    protected $service;
     const VALIDATOR_PATH = 'App\\Validators\\';
 
     public function setService(Service $service) {

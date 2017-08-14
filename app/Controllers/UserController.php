@@ -7,12 +7,10 @@ use App\Services\UserService;
 
 class UserController extends BaseController {
 
-    private $service;
-
     public function __construct() {
         $this->service = new UserService('dev');
     }
-
+    
     /**
      * @template "User/get.twig"
      * @method "GET"
