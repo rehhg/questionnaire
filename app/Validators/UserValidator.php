@@ -8,8 +8,6 @@ use App\Models\Model;
 class UserValidator implements Validator {
 
     public function validate(Model $user) {
-        unset($user->create);
-        unset($user->update);
         $errors = [];
         
         !filter_var($user->username, FILTER_VALIDATE_REGEXP, 
