@@ -60,7 +60,7 @@ class UserService extends Service {
         }
         
         $data = $query->fetch(\PDO::FETCH_ASSOC);
-        
+
         return $data ? new User($data) : null;
     }
     
@@ -82,19 +82,14 @@ class UserService extends Service {
         
     }
     
-    public function deleteUser($id_user) {
-        if(gettype($id_user) === 'integer'){
-            $query = $this->db->prepare("DELETE FROM users WHERE id_user = ?");
-            $query->bindParam(1, $id_user, \PDO::PARAM_INT);
-            $query->execute();
-            if($query->rowCount() == 0) {
-                throw new PDOException("There are no user with id = $id_user");
-            }
-        } else {
-            throw new PDOException('id need to be an integer');
+    public function deleteUser(User $user = null) {
+        $query = $this->db->prepare("DELETE FROM users WHERE id_user = ?");
+        $query->bindParam(1, $user->id_user, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
         }
-        
-        return true;
+
+        return $user;
         
     }
     

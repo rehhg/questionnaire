@@ -29,7 +29,7 @@ class UserControllerTest extends TestCase {
         
         $rows = $query->fetchColumn();
         
-        if($rows > 1) {
+        if($rows > 2) {
             self::$db->query("DELETE FROM users WHERE id_user != 2");
         } 
     }
@@ -151,23 +151,24 @@ class UserControllerTest extends TestCase {
         $userController->setService($service);
         
         if($exception){
-            $this->expectException("PDOException");
-            throw new PDOException();
+            $this->expectException("TypeError");
         }
 
-        try{
-            $service->expects($this->any())     
-                    ->method("deleteUser")
-                    ->will($this->returnValue(true));
+        $service->expects($this->any())     
+                ->method("deleteUser")
+                ->will($this->returnValue($input));
 
-            $this->assertEquals($service->deleteUser($input), $userController->deleteAction($input));
-        } catch (PDOException $ex) {}
+        $this->assertEquals($service->deleteUser($input), $userController->deleteAction(5));
     }
     
     public function providerDeleteAction() {
+        $data = ["id_user" => 5, "firstname" => "User",
+                 "lastname" => "UserLast", "email" => "user@gmail.com", 
+                 "username" => "user", "password" => "111111", 
+                 "user_role" => "Admin"];
         return [
             // exception    input      
-            [false,         5],
+            [false,         new User($data)],
             [true,          1111],
             [true,          array()],
             [true,          'sdfdg']

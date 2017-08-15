@@ -92,14 +92,22 @@ class UserController extends BaseController {
      */
     public function deleteAction($id) {
         $idUser = intval($id);
+        $errors = [];
+        $userToDelete = $this->service->getUser($idUser);
+        
+        !filter_var($idUser, FILTER_VALIDATE_INT) ? $errors[] = "id need to be an integer" : true;
+        !$userToDelete ? $errors[] = "There are no user with id = $idUser" : true;
 
-        $deletedUser = $this->service->deleteUser($idUser);
+        if(empty($errors)){
+            $deletedUser = $this->service->deleteUser($userToDelete);
 
-        if ($deletedUser) {
-            $this->redirect("/user/userslist");
+            if (is_a($deletedUser, "App\Models\User")){
+                $this->redirect("/user/userslist");
+                return $deletedUser;
+            }
         }
-
-        return $deletedUser;
+        
+        return $userToDelete;
     }
 
 }
