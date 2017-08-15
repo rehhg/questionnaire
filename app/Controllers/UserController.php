@@ -107,7 +107,7 @@ class UserController extends BaseController {
             }
         }
         
-        return $userToDelete;
+        return $errors;
     }
 
 }
