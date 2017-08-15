@@ -23,7 +23,9 @@ class UserServiceTest extends TestCase {
     }
     
     private function deleteMethod() {
-        $query = self::$db->prepare("INSERT INTO users VALUES (2, 'ut_DELETE', 'DELETE@mail.ua', NOW())");
+        $sql = "INSERT INTO users VALUES (2, 'F_AdminDelete', 'L_AdminDelete', 'admDelete@gmail.com', "
+                . "'admin666Del', SHA(123456), 'Admin', NOW(), 0)";
+        $query = self::$db->prepare($sql);
         $query->execute();
     }
     
@@ -34,17 +36,18 @@ class UserServiceTest extends TestCase {
         $rows = $query->fetchColumn();
         
         if($rows > 2) {
-            self::$db->query("DELETE FROM users WHERE id NOT IN (1, 2)");
+            self::$db->query("DELETE FROM users WHERE id_user NOT IN (1, 2)");
         }
     }
     
     private function updateMethod() {
-        $query = self::$db->prepare("SELECT name, email FROM users WHERE id = 1");
+        $query = self::$db->prepare("SELECT username, email FROM users WHERE id_user = 1");
         $query->execute();
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         
-        if(($data['name'] != 'ut_name') || ($data['email'] != 'ut_name@gmail.com')) {
-            $query = self::$db->prepare("UPDATE users SET name = 'ut_name', email = 'ut_name@gmail.com' WHERE id = 1");
+        if(($data['username'] != 'admin666') || ($data['email'] != 'admin@gmail.com')) {
+            $query = self::$db->prepare("UPDATE users SET username = 'admin666', "
+                    . "email = 'admin@gmail.com' WHERE id_user = 1");
             $query->execute();
         }
     }
@@ -56,7 +59,7 @@ class UserServiceTest extends TestCase {
         $user = self::$userService->getUser($id);
 
         if (!$expectException) {
-            $this->assertEquals($username, $user->name);
+            $this->assertEquals($username, $user->username);
             $this->assertEquals($email, $user->email);
         } else {
             $this->assertEmpty($user);
@@ -66,7 +69,7 @@ class UserServiceTest extends TestCase {
     public function getUserProvider() {
         return [
             //expectExc,    id,     username,   email
-            [false,         1,      'ut_name', 'ut_name@gmail.com'],
+            [false,         1,      'admin666', 'admin@gmail.com'],
             [true,          null],
             [true,          'invalid'],
             [true,          9999999]
@@ -78,8 +81,12 @@ class UserServiceTest extends TestCase {
     */
     public function testCreateUser($expectException, $username, $email) {
         $userData = new App\Models\User([
-            "name" => $username, 
-            "email" => $email
+            "firstname" => "Test",
+            "lastname" => "TestLastname",
+            "email" => $email,
+            "username" => $username, 
+            "password" => 123456,
+            "user_role" => "Employee"
         ]);
         
         if ($expectException) {
@@ -88,14 +95,13 @@ class UserServiceTest extends TestCase {
         
         try {
             $user = self::$userService->createUser($userData);
-            $query = self::$db->prepare("SELECT name, email FROM users WHERE name = ? AND email = ?");
-            $query->bindParam(1, $user->name, \PDO::PARAM_STR);
+            $query = self::$db->prepare("SELECT username, email FROM users WHERE username = ? AND email = ?");
+            $query->bindParam(1, $user->username, \PDO::PARAM_STR);
             $query->bindParam(2, $user->email, \PDO::PARAM_STR);
             $query->execute();
 
             $result = $query->fetch(\PDO::FETCH_ASSOC);
-
-            $this->assertEquals($username, $result["name"]);
+            $this->assertEquals($username, $result["username"]);
             $this->assertEquals($email, $result["email"]);
         } catch (PDOException $ex) {
             $this->assertContains($expectException, $ex->getMessage());
@@ -108,9 +114,9 @@ class UserServiceTest extends TestCase {
         return [
             //expectExc,                      username,     email
             [false,                           'ut_name222', 'ut_222name@gmail.com'],
-            ["'email' cannot be null",           'ut_name222', null],
-            ["'name' cannot be null",            null,         'ut_222name@gmail.com'],
-            ["'name' cannot be null",  null,         null]
+            ["'email' cannot be null",        'ut_name222', null],
+            ["'username' cannot be null",      null,         'ut_222name@gmail.com'],
+            ["'email' cannot be null",      null,         null]
         ];
     }
     
@@ -119,9 +125,13 @@ class UserServiceTest extends TestCase {
     */
     public function testUpdateUser($expectException, $username, $email) {
         $userData = new App\Models\User([
-            "name" => $username, 
+            "firstname" => "AdminName",
+            "lastname" => "AdminSurname",
             "email" => $email,
-            "id" => 1
+            "username" => $username, 
+            "password" => sha1(123456),
+            "user_role" => "Admin",
+            "id_user" => 1
         ]);
         
         if($expectException) {
@@ -130,14 +140,14 @@ class UserServiceTest extends TestCase {
         
         try {
             $user = self::$userService->updateUser($userData);
-            $query = self::$db->prepare("SELECT name, email FROM users WHERE name = ? AND email = ?");
-            $query->bindParam(1, $user->name, \PDO::PARAM_STR);
+            $query = self::$db->prepare("SELECT username, email FROM users WHERE username = ? AND email = ?");
+            $query->bindParam(1, $user->username, \PDO::PARAM_STR);
             $query->bindParam(2, $user->email, \PDO::PARAM_STR);
             $query->execute();
             
             $result = $query->fetch(\PDO::FETCH_ASSOC);
             
-            $this->assertEquals($username, $result["name"]);
+            $this->assertEquals($username, $result["username"]);
             $this->assertEquals($email, $result["email"]);
         } catch (Exception $ex) {
             $this->assertContains($expectException, $ex->getMessage());
@@ -148,11 +158,11 @@ class UserServiceTest extends TestCase {
     
     public function updateUserProvider() {
         return [
-            //expectExc,                      username,     email
-            [false,                           'ut_name1',   'ut_name1@gmail.com'],
-            ["'email' cannot be null",           'ut_name1',   null],
-            ["'name' cannot be null",            null,         'ut_name1@gmail.com'],
-            ["'name' cannot be null",  null,         null]
+            //expectExc,                      username,             email
+            [false,                           'Updated_admin666',   'Updated_admin@gmail.com'],
+            ["'email' cannot be null",         'ut_name1',           null],
+            ["'username' cannot be null",      null,                'ut_name1@gmail.com'],
+            ["'email' cannot be null",         null,                 null]
         ];
     }
 

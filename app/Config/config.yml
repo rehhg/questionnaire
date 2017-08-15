@@ -1,5 +1,5 @@
 dev:
-    host:  mysql:dbname=questionnaire;host=127.0.0.1
+    host:  mysql:dbname=qst;host=127.0.0.1
     user:  root
     pass:  123456
 test:

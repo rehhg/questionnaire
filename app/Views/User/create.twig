@@ -1,56 +1,69 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Bootstrap Admin Theme v3</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../public/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../public/css/styles.css" rel="stylesheet">
-  </head>
-  <body class="login-bg">
-  	<div class="header">
-	     <div class="container">
-	        <div class="row">
-	           <div class="col-md-12">
-	              <!-- Logo -->
-	              <div class="logo">
-	                 <h1><a href="index.html">Bootstrap Admin Theme</a></h1>
-	              </div>
-	           </div>
-	        </div>
-	     </div>
-	</div>
+{% extends "templates/user.twig" %}
 
-	<div class="page-content container">
-		<div class="row">
-			<div class="col-md-4 col-md-offset-4">
-				<div class="login-wrapper">
-			        <div class="box">
-			            <div class="content-wrap">
-			                <h6>Sign Up</h6>
-			                <input class="form-control" type="text" placeholder="E-mail address">
-			                <input class="form-control" type="password" placeholder="Password">
-			                <input class="form-control" type="password" placeholder="Confirm Password">
-			                <div class="action">
-			                    <a class="btn btn-primary signup" href="index.html">Sign Up</a>
-			                </div>                
-			            </div>
-			        </div>
+{% block content %}
 
-			        <div class="already">
-			            <p>Have an account already?</p>
-			            <a href="login.html">Login</a>
-			        </div>
-			    </div>
-			</div>
-		</div>
-	</div>
+    <div class="col-md-6">
+        <div class="content-box-large">
+            <div class="panel-heading">
+                <div class="panel-title">Create New User</div>
+            </div>
+            <div class="panel-body">
+                <form action="" method="POST">
+                    <fieldset>
+                        
+                        {% if data is object %}
+                            <div class="alert alert-success">
+                                You successfully created a new user!
+                            </div>
+                        {% elseif data != null %}
+                            <div class="alert alert-danger">
+                                {% for item in data %}
+                                    {{ item }}.<br />
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="form-group">
+                            <label>Username*</label>
+                            <input class="form-control" placeholder="Username" type="text" name="username" value="{{ post.username }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Email*</label>
+                            <input class="form-control" placeholder="Email" type="text" name="email" value="{{ post.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Firstname*</label>
+                            <input class="form-control" placeholder="Firstname" type="text" name="firstname" value="{{ post.firstname }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Lastname*</label>
+                            <input class="form-control" placeholder="Lastname" type="text" name="lastname" value="{{ post.lastname }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Password*</label>
+                            <input class="form-control" placeholder="Password" type="password" name="password" value="{{ post.password }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password*</label>
+                            <input class="form-control" placeholder="Confirm Password" type="password" name="confirm_password" value="{{ post.confirm_password }}">
+                        </div>
+                        <div class="form-group">
+                            <label>User role</label>
+                            <select name="user_role">
+                                <option value="Admin" {% if post.user_role == 'Admin' %} selected="selected" {% endif %}>Admin</option>
+                                <option value="Manager" {% if post.user_role == 'Manager' %} selected="selected" {% endif %}>Manager</option>
+                                <option value="Employee" {% if post.user_role == 'Employee' %} selected="selected" {% endif %}>Employee</option>
+                            </select>
+                        </div>
+                    </fieldset>
+                    <div>
+                        <button type="submit" class="btn btn-primary pull-right" style="margin: 0 2px">CREATE</button>
+                        <button type="reset" class="btn btn-primary pull-right" style="margin: 0 2px">CANCEL</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../public/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../public/js/custom.js"></script>
-  </body>
-</html>
+{% endblock %}
