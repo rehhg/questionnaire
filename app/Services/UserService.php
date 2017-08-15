@@ -7,6 +7,39 @@ use PDOException;
 
 class UserService extends Service {
     
+    private $salt = '$12a$';
+    
+    public function auth(User $user = null){
+        $hash = sha1($this->salt . $user->password);
+        setcookie('user', $hash . '.' . $user->id_user, time() + 3600 * 24);
+    }
+    
+    public function checkIfUserExist(User $user = null){
+        $result = $this->db->prepare("SELECT * FROM users WHERE username = ? AND password = SHA(?)");
+        $result->bindParam(1, $user->username, \PDO::PARAM_STR);
+        $result->bindParam(2, $user->password, \PDO::PARAM_STR);
+        $result->execute();
+        
+        $userData = $result->fetch();
+        
+        return $userData ? new User($userData) : false;
+    }
+    
+    public function idenifyUser(){
+        if(isset($_COOKIE['user'])) {
+            $data = explode(".", $_COOKIE['user']);
+            
+            $result = $this->db->prepare("SELECT * FROM users WHERE id_user = ?");
+            $result->bindParam(1, $data[1], \PDO::PARAM_STR);
+            $result->execute();
+        
+            $userData = $result->fetch();
+            
+            return $userData ? new User($userData) : false;
+        }
+        return false;
+    }
+    
     public function getAllUsers() {
         $query = $this->db->prepare("SELECT * FROM users");
         if(!$query->execute()) {

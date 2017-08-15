@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Validators\UserValidator;
 use App\Services\UserService;
 
 class UserController extends BaseController {
@@ -13,6 +14,38 @@ class UserController extends BaseController {
         $this->userService = new UserService('dev');
     }
 
+    /**
+     * @template "User/auth.twig"
+     * @method ["GET", "POST"]
+     */
+    public function authAction() {
+        if(isset($_POST['login'])) {
+            $user = new User($_POST);
+            $errors = UserValidator::validateAuth($user);
+            
+            $userData = $this->userService->checkIfUserExist($user);
+            
+            if(!$userData) {
+                $errors[] = 'There are no user with this username and password';
+            } 
+            
+            if(empty($errors)) {
+                $this->userService->auth($userData);
+                header('Location: /');
+            }
+            
+            return $errors;
+        }
+    }
+    
+    /**
+     * @method ["GET", "POST"]
+     */
+    public function logoutAction() {
+        setcookie('user', null, -1);
+        header("Location: /");
+    }
+    
     /**
      * @template "User/get.twig"
      * @method "GET"

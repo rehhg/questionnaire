@@ -34,5 +34,17 @@ class UserValidator implements Validator {
         
         return $errors;
     }
+    
+    public static function validateAuth(Model $user) {
+        $errors = [];
+        
+        !filter_var($user->username, FILTER_VALIDATE_REGEXP, 
+                array("options" => ["regexp" => "/^[a-zA-Z](([\._\-][a-zA-Z0-9])|[a-zA-Z0-9])*[a-z0-9]$/"])) ? 
+                $errors[] = 'Please enter valid username' : true;
+        !filter_var($user->password, FILTER_VALIDATE_REGEXP, array( "options"=> array( "regexp" => "/.{6,25}/"))) ? 
+            $errors[] = 'Please enter valid password' : true;
+        
+        return $errors;
+    }
 
 }
