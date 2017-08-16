@@ -8,12 +8,10 @@ use App\Services\UserService;
 
 class UserController extends BaseController {
 
-    private $userService;
-
     public function __construct() {
-        $this->userService = new UserService('dev');
+        $this->service = new UserService('dev');
     }
-
+    
     /**
      * @template "User/auth.twig"
      * @method ["GET", "POST"]
@@ -72,9 +70,7 @@ class UserController extends BaseController {
      * @method "GET"
      */
     public function listAction() {
-        $allUsers = $this->userService->getAllUsers();
-
-        return $allUsers;
+        return $this->service->getAllUsers();
     }
 
     /**
@@ -82,13 +78,12 @@ class UserController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function createAction() {
-        if (isset($_POST['create']) && !empty($_POST)) {
+        if (!empty($_POST)) {
             $user = new User($_POST);
             $errors = $this->validate($user);
                     
             if(empty($errors)){
-                $newUser = $this->userService->createUser($user);
-                return $newUser;
+                return $this->service->createUser($user);
             } else {
                 return $errors;
             }
@@ -100,10 +95,10 @@ class UserController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function updateAction($id) {
-        $id_user = intval($id);
-        $userToUpdate = $this->userService->getUser($id_user);
+        $idUser = intval($id);
+        $userToUpdate = $this->service->getUser($idUser);
         
-        if (isset($_POST['update']) && $userToUpdate && !empty($_POST)) {
+        if ($userToUpdate && !empty($_POST)) {
             foreach($_POST as $key => $value) {
                 $userToUpdate->$key = $value;
             }
@@ -116,8 +111,7 @@ class UserController extends BaseController {
             $errors = $this->validate($userToUpdate);
 
             if(empty($errors)) {
-                $updateUser = $this->userService->updateUser($userToUpdate);
-                return $updateUser;
+                return $this->service->updateUser($userToUpdate);
             } else {
                 $userToUpdate->errors = $errors;
             }
@@ -130,15 +124,23 @@ class UserController extends BaseController {
      * @method "GET"
      */
     public function deleteAction($id) {
-        $id_user = intval($id);
+        $idUser = intval($id);
+        $errors = [];
+        $userToDelete = $this->service->getUser($idUser);
+        
+        !filter_var($idUser, FILTER_VALIDATE_INT) ? $errors[] = "id need to be an integer" : true;
+        !$userToDelete ? $errors[] = "There are no user with id = $idUser" : true;
 
-        $deletedUser = $this->userService->deleteUser($id_user);
+        if(empty($errors)){
+            $deletedUser = $this->service->deleteUser($userToDelete);
 
-        if ($deletedUser) {
-            header("Location: /user/userslist");
+            if (is_a($deletedUser, "App\Models\User")){
+                $this->redirect("/user/userslist");
+                return $deletedUser;
+            }
         }
-
-        return $deletedUser;
+        
+        return $errors;
     }
 
 }
