@@ -1,0 +1,155 @@
+{% extends "templates/userslist.twig" %}
+
+{% block content %}
+
+    <div class="col-md-6">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" 
+                data-target="#filter-panel" style="margin-bottom: 2px;">
+            <span class="glyphicon glyphicon-filter"></span>FILTER
+        </button>
+        <div id="filter-panel" class="collapse filter-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form class="form" role="form">
+                            <div class="input-group date" id="datetimepicker1">
+                                <input type="text" class="form-control" />
+                                <span class="input-group-addon">
+                                  <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                              </div>
+                        <script type="text/javascript">
+                        $(function () {
+                          $('#datetimepicker1').datetimepicker();
+                            });
+                        </script>
+                        <div class="form-group">
+                            <label class="filter-col" for="pref-search">Text:</label>
+                            <input id="nameInput" onkeyup="filterUsers()"
+                                   type="text" class="form-control input-sm" id="pref-search">
+                        </div>
+                        <div class="form-group">
+                            <label class="filter-col" for="pref-perpage">Type:</label>
+                            <select class="form-control" id="roleInput">
+                                <option value="" selected="selected"> </option>
+                                <option value="Urgent">Urgent</option>
+                                <option value="High">High</option>
+                                <option value="Standart">Standart</option>
+                                <option value="Minor">Minor</option>
+                                <option value="Low Priority">Low Priority</option>
+                                <option value="Critical">Critical</option>
+                            </select>                                
+                        </div>
+                        <div class="form-group">
+                            <button type="button" style="margin: 0 2px" 
+                                    class="btn btn-default filter-col pull-right" onclick="filterUsers()">Filter</button> 
+                            <button type="reset" style="margin: 0 2px" 
+                                    class="btn btn-default filter-col pull-right" name="reset">Reset</button> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>   
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="content-box-large">
+                <div class="panel-heading">
+                    <div class="panel-title">Users list</div>
+                    <div class="panel-options">
+                        <a href="/task/create"><button class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-plus"></span> NEW TASK</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped" id="filterTable">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Department</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>Frontend</td>
+                                <td>Create view for update users.</td>
+                                <td>High</td>
+                                <td>Training Center</td>
+                                <td><a href="#" data-toggle="modal" data-target="#pop-up"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+
+                        <div class="modal fade" id="pop-up" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Task information</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="content-box-header">
+                                                <div class="panel-title">Frontend</div>
+                                                <div class="panel-options">
+                                                    <p data-rel="collapse">Date: 17.09.2017</p>
+                                                </div>
+                                            </div>
+                                            <div class="content-box-large box-with-header">
+                                                Create view for update users.
+                                                <br /><br />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <td><a href="#"><i class="glyphicon glyphicon-trash"></i></a></td>
+                        <td><a href="#"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                        <td><a href="#" data-toggle="modal" data-target="#history"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+                        
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="modal fade" id="history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">History</h5>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Change Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>Admin</th>
+                                            <th>18.08.2017</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
