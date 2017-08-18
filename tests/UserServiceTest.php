@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use App\Models\User;
 
 class UserServiceTest extends TestCase {
 
@@ -51,6 +52,40 @@ class UserServiceTest extends TestCase {
             $query->execute();
         }
     }
+    
+    /**
+     * @dataProvider checkUserProvider
+     */
+    public function testCheckIfUserExist($expectException, $param, $userData) {
+        if($expectException) {
+            $this->expectException("TypeError");
+        }
+        $user = self::$userService->checkIfUserExist($param);
+        
+        $this->assertEquals($userData, $user);
+    }
+
+    public function checkUserProvider() {
+        $userData = new User([
+            "id_user" => "2",
+            "firstname" => "F_AdminDelete",
+            "lastname" => "L_AdminDelete",
+            "email" => "admDelete@gmail.com",
+            "username" => "admin666Del", 
+            "password" => "7c4a8d09ca3762af61e59520943dc26494f8941b",
+            "user_role" => "Admin",
+            "created_date" => "2017-08-12 12:48:53",
+            "deleted" => "0"
+        ]);
+        $data = ["username" => "Admin666Del", "password" => "123456"];
+        return [
+            //expectExc,    param            user
+            [false,         new User($data), $userData],
+            [true,          null,            $userData],
+            [true,          'invalid',       $userData],
+            [true,          9999999,         $userData]
+        ];
+    }
 
     /**
      * @dataProvider getUserProvider
@@ -80,7 +115,7 @@ class UserServiceTest extends TestCase {
      * @dataProvider createUserProvider
     */
     public function testCreateUser($expectException, $username, $email) {
-        $userData = new App\Models\User([
+        $userData = new User([
             "firstname" => "Test",
             "lastname" => "TestLastname",
             "email" => $email,
@@ -124,7 +159,7 @@ class UserServiceTest extends TestCase {
      * @dataProvider updateUserProvider
     */
     public function testUpdateUser($expectException, $username, $email) {
-        $userData = new App\Models\User([
+        $userData = new User([
             "firstname" => "AdminName",
             "lastname" => "AdminSurname",
             "email" => $email,

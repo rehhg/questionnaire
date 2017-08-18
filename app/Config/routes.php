@@ -9,5 +9,7 @@
         'user/update/([0-9]+)' => 'user/update/$1',
         'user/delete/([0-9]+)' => 'user/delete/$1',
         'user/userslist' => 'user/list',
+        'login' => 'user/auth',
+        'logout' => 'user/logout',
         ''  => 'home/index',
     );
