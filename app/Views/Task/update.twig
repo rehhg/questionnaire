@@ -1,3 +1,4 @@
+{% set title = 'Update task' %}
 {% extends "templates/createtask.twig" %}
 
 {% block content %}
@@ -5,35 +6,42 @@
     <div class="col-md-8">
         <div class="content-box-large">
             <div class="panel-heading">
-                <div class="panel-title">Create New Task</div>
+                <div class="panel-title">Update Task</div>
             </div>
             <div class="panel-body">
                 <form action="" method="POST">
                     <fieldset>
-                        <div class="row">
-                            <div class="form-group pull-left">
-                                <label>Date*</label>
-                                <div class="bfh-datepicker" data-format="y-m-d" data-date="today"></div>
+                        
+                        {% if data.errors %}
+                            <div class="alert alert-danger">
+                                {% for item in data.errors %}
+                                    {{ item }}.<br />
+                                {% endfor %}
                             </div>
-                        </div>
-                        <div class="row">
+                        {% endif %}
+                        
+                        <div class="form-group pull-left">
+                                <label>Date*</label>
+                                <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
+                                <script>
+                                    webshims.setOptions('forms-ext', {types: 'date'});
+                                    webshims.polyfill('forms forms-ext');
+                                </script>
+                                <input type="date" class="form-control" name="created_at" value="{{ data.created_at }}" />
+                            </div>
                             <div class="form-group col-sm-10">
                                 <label>Subject*</label>
-                                <input type="text" class="form-control" placeholder="Subject">
+                                <input type="text" class="form-control" placeholder="Subject" name="subject" value="{{ data.subject }}">
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="form-group pull-left">
                                 <label>Description*</label>
                                 <div class="panel-body">
-                                    <textarea id="tinymce_basic"></textarea>
+                                    <textarea id="tinymce_basic" name="description">{{ data.description }}</textarea>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="form-group pull-left col-sm-10">
                                 <label>Task Type*</label>
-                                <div class="bfh-selectbox" data-name="selectbox3" data-value="12" data-filter="true">
+                                <div class="bfh-selectbox" data-name="tasktype" data-value="{{ data.tasktype ? data.tasktype : "Urgent"  }}" data-filter="true">
                                     <div data-value="Urgent">Urgent</div>
                                     <div data-value="High">High</div>
                                     <div data-value="Standart">Standart</div>
@@ -42,11 +50,9 @@
                                     <div data-value="Critical">Critical</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="form-group pull-left col-sm-10">
                                 <label>Department*</label>
-                                <div class="bfh-selectbox" data-name="selectbox3" data-value="12" data-filter="true">
+                                <div class="bfh-selectbox" data-name="department" data-value="{{ data.department ? data.department : "HR"  }}" data-filter="true">
                                     <div data-value="HR">HR</div>
                                     <div data-value="Development">Development</div>
                                     <div data-value="Delivery">Delivery</div>
@@ -55,7 +61,6 @@
                                     <div data-value="Training Center">Training Center</div>
                                 </div>
                             </div>
-                        </div>
                     </fieldset>
                     <div>
                         <button type="back" class="btn btn-primary pull-left" style="margin: 0 2px">BACK</button>

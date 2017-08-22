@@ -17,7 +17,7 @@
                                 webshims.setOptions('forms-ext', {types: 'date'});
                                 webshims.polyfill('forms forms-ext');
                             </script>
-                            <input type="date" />
+                            <input type="date" id="dateInput"/>
                           </div>
                         <div class="form-group">
                             <label class="filter-col" for="pref-search">Text:</label>
@@ -73,15 +73,15 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                            {% for item in data %}
                             <tr>
-                                <td>Frontend</td>
-                                <td>Create view for update users.</td>
-                                <td>High</td>
-                                <td>Training Center</td>
-                                <td><a href="#" data-toggle="modal" data-target="#pop-up"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+                                <td>{{ item.subject }}</td>
+                                <td>{{ item.created_at }}</td>
+                                <td>{{ item.tasktype }}</td>
+                                <td>{{ item.department }}</td>
+                                <td><a href="#" data-toggle="modal" data-target="#pop-up{{ item.id_task }}"><i class="glyphicon glyphicon-eye-open"></i></a></td>
 
-                        <div class="modal fade" id="pop-up" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="pop-up{{ item.id_task }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -90,13 +90,13 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="content-box-header">
-                                                <div class="panel-title">Frontend</div>
+                                                <div class="panel-title">{{ item.subject }}</div>
                                                 <div class="panel-options">
-                                                    <p data-rel="collapse">Date: 17.09.2017</p>
+                                                    <p data-rel="collapse">Date: {{ item.created_at }}</p>
                                                 </div>
                                             </div>
                                             <div class="content-box-large box-with-header">
-                                                Create view for update users.
+                                                    {{ item.description | raw }}
                                                 <br /><br />
                                             </div>
                                         </div>
@@ -108,35 +108,25 @@
                             </div>
                         </div>
 
-                        <td><a href="#"><i class="glyphicon glyphicon-trash"></i></a></td>
-                        <td><a href="#"><i class="glyphicon glyphicon-pencil"></i></a></td>
-                        <td><a href="#" data-toggle="modal" data-target="#history"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+                        <td>
+                            <a href="{{ urlPlusId('/task/delete', item.id_task) }}" onclick="return confirm('Do you really want to delete this task?')">
+                                <i class="glyphicon glyphicon-trash"></i>
+                            </a>
+                        </td>
+                        <td><a href="/task/update/{{ item.id_task }}"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                        <td><a href="#" data-toggle="modal" data-target="#history{{ item.id_task }}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
                         
-                        </tr>
-
-                        </tbody>
-                    </table>
-                    <div class="modal fade" id="history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="history{{ item.id_task }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
                             <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">History</h5>
                             </div>
                             <div class="modal-body">
-                                <table class="table table-borderless">
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Change Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th>Admin</th>
-                                            <th>18.08.2017</th>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <ul style="list-style: none">
+                                    <li>Username: Admin</li>
+                                    <li>Change Date: {{ item.created_at }}</li>
+                                </ul>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -144,6 +134,14 @@
                           </div>
                         </div>
                       </div>
+                        
+                        </tr>
+                        
+                        {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                    
                 </div>
             </div>
         </div>

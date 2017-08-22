@@ -12,7 +12,7 @@ class App {
     }
     
     public static function clean($var) {
-        return trim(strip_tags(htmlspecialchars($var)));
+        return trim(strip_tags(stripslashes(htmlspecialchars($var))));
     }
     
 }

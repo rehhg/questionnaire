@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `qst`.`tasks` (
   `id_task` INT(11) NOT NULL AUTO_INCREMENT,
   `subject` VARCHAR(45) NOT NULL,
   `description` VARCHAR(255) NOT NULL,
-  `created_at` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
+  `created_at` DATE NOT NULL DEFAULT '1000-01-01 00:00:00',
   `id_department` INT(11) NOT NULL,
   `id_type` INT(11) NOT NULL,
   PRIMARY KEY (`id_task`, `id_department`, `id_type`),

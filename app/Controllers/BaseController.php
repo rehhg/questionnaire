@@ -23,7 +23,7 @@ class BaseController {
         $modelClassName = substr($modelName, strrpos($modelName, "\\") + 1);
         $validatorName = self::VALIDATOR_PATH . $modelClassName . 'Validator';
         $validator = new $validatorName;
-
+        
         return $validator->validate($model);
     }
 
