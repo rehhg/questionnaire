@@ -124,8 +124,7 @@ class Router {
         echo $twig->render($template, array(
             "data" => $data,
             "post" => $_POST,
-            "session" => $_SESSION,
-            "request" => $_REQUEST
+            "session" => $_SESSION
             ));
     }
 

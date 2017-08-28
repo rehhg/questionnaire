@@ -6,6 +6,10 @@ use App\Models\Task;
 
 class TaskService extends Service {
     
+    const TASK_STATUS_DONE = 'Done';
+    const TASK_STATUS_IN_PROGRESS = 'In progress';
+    const TASK_STATUS_OPEN = 'Open';
+    
     public function getAllTasks() {
         $query = $this->db->prepare("SELECT * FROM tasks");
         if(!$query->execute()) {
@@ -120,9 +124,7 @@ class TaskService extends Service {
             throw new PDOException($this->getDbError($query));
         }
         
-        $_REQUEST = $query->fetchAll(\PDO::FETCH_ASSOC);
-        
-        return $_REQUEST;
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     private function getAllUsersFromUsersTasks($id_task) {
@@ -146,9 +148,13 @@ class TaskService extends Service {
     }
     
     public function changeStatus($val, $id_task) {
-        $val == 1 ? $status = 'Done' : false;
-        $val == 2 ? $status = 'In progress' : false;
-        $val == 3 ? $status = 'Open' : false;
+        $statuses = array(
+            1 => self::TASK_STATUS_DONE,
+            2 => self::TASK_STATUS_IN_PROGRESS,
+            3 => self::TASK_STATUS_OPEN,
+        );
+        
+        $status = $statuses[$val];
         
         $query = $this->db->prepare("UPDATE users_tasks SET status = ? WHERE id_task = ?");
         $query->bindParam(1, $status, \PDO::PARAM_STR);

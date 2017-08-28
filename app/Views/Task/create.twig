@@ -12,13 +12,13 @@
                 <form action="" method="POST">
                     <fieldset>
                         
-                        {% if data is object %}
+                        {% if data.task is object %}
                             <div class="alert alert-success">
                                 You successfully created a new task!
                             </div>
-                        {% elseif data != null %}
+                        {% elseif data.errors != null %}
                             <div class="alert alert-danger">
-                                {% for item in data %}
+                                {% for item in data.errors %}
                                     {{ item }}.<br />
                                 {% endfor %}
                             </div>
@@ -69,7 +69,7 @@
                                 <label>Assign employee*</label>
                                 <div class="bfh-selectbox" data-name="assign" data-value="{{ post.assign ? post.assign : "" }}" data-filter="true">
                                     
-                                    {% for item in request %}
+                                    {% for item in data.users %}
                                     <div data-value="{{ item.id_user }}">{{ item.firstname }} {{ item.lastname }}</div>
                                     {% endfor %}
                                 </div>

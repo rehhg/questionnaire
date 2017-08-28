@@ -26,18 +26,28 @@ class TaskController extends BaseController {
     public function createAction() {
         
         // get all users for assign
-        $this->service->getAllUsersForAssign();
-
+        $users = $this->service->getAllUsersForAssign();
+        
         if (!empty($_POST)) {
             $task = new Task($_POST);
             $errors = $this->validate($task);
 
             if(empty($errors)){
-                return $this->service->createTask($task);
+                return [
+                    'task' => $this->service->createTask($task),
+                    'users' => $users
+                ];
             } else {
-                return $errors;
+                return [
+                    'errors' => $errors,
+                    'users' => $users
+                ];
             }
         }
+        
+        return [
+            'users' => $users
+        ];
     }
     
     /**
@@ -47,7 +57,7 @@ class TaskController extends BaseController {
     public function updateAction($id) {
         
         // get all users for assign
-        $this->service->getAllUsersForAssign();
+        $users = $this->service->getAllUsersForAssign();
         
         $idTask = intval($id);
         $taskToUpdate = $this->service->getTask($idTask);
@@ -60,13 +70,19 @@ class TaskController extends BaseController {
             $errors = $this->validate($taskToUpdate);
 
             if(empty($errors)) {
-                return $this->service->updateTask($taskToUpdate);
+                return [
+                    'task' => $this->service->updateTask($taskToUpdate),
+                    'users' => $users
+                ];
             } else {
                 $taskToUpdate->errors = $errors;
             }
         }
 
-        return $taskToUpdate;
+        return [
+            'task' => $taskToUpdate,
+            'users' => $users
+        ];
     }
     
     /**
