@@ -61,6 +61,15 @@
                                     <div data-value="Training Center">Training Center</div>
                                 </div>
                             </div>
+                            <div class="form-group pull-left col-sm-10">
+                                <label>Assign employee*</label>
+                                <div class="bfh-selectbox" data-name="assign" data-value="{{ post.assign ? post.assign : data.id_user }}" data-filter="true">
+                                    
+                                    {% for item in request %}
+                                    <div data-value="{{ item.id_user }}">{{ item.firstname }} {{ item.lastname }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
                     </fieldset>
                     <div>
                         <button type="back" class="btn btn-primary pull-left" style="margin: 0 2px">BACK</button>

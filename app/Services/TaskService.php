@@ -29,6 +29,8 @@ class TaskService extends Service {
             
             $task->description = htmlspecialchars_decode($task->description);
             
+            $task->user = $this->getAllUsersFromUsersTasks($task->id_task);
+            
             $tasks[] = $task;
         }
 
@@ -63,6 +65,8 @@ class TaskService extends Service {
             $result = $query->fetch(\PDO::FETCH_ASSOC);
             
             $task->id_task = $result["id_task"];
+            
+            $this->insertInformationIntoUsersTask($task->assign, $task->id_task);
         }
 
         return $task;
@@ -104,10 +108,70 @@ class TaskService extends Service {
         }
         
         $data = $query->fetch(\PDO::FETCH_ASSOC);
+        
+        $data['id_user'] = $this->getIdFromTable('id_user', 'users_tasks', 'id_task', $id);
 
         return $data ? new Task($data) : null;
     }
     
+    public function getAllUsersForAssign() {
+        $query = $this->db->prepare("SELECT id_user, firstname, lastname FROM users");
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+        
+        $_REQUEST = $query->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return $_REQUEST;
+    }
+    
+    private function getAllUsersFromUsersTasks($id_task) {
+        $query = $this->db->prepare("SELECT firstname, lastname FROM users WHERE id_user = (SELECT id_user FROM users_tasks WHERE id_task = ?)");
+        $query->bindParam(1, $id_task, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+        
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        
+        $query = $this->db->prepare("SELECT status FROM users_tasks WHERE id_task = ?");
+        $query->bindParam(1, $id_task, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+        
+        $data['status'] = $query->fetchColumn();
+        
+        return $data;
+    }
+    
+    public function changeStatus($val, $id_task) {
+        $val == 1 ? $status = 'Done' : false;
+        $val == 2 ? $status = 'In progress' : false;
+        $val == 3 ? $status = 'Open' : false;
+        
+        $query = $this->db->prepare("UPDATE users_tasks SET status = ? WHERE id_task = ?");
+        $query->bindParam(1, $status, \PDO::PARAM_STR);
+        $query->bindParam(2, $id_task, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+        
+        return true;
+    }
+
+    private function insertInformationIntoUsersTask($id_user, $id_task) {
+        $query = $this->db->prepare("INSERT INTO users_tasks VALUES (?, ?, 'Open')");
+        $query->bindParam(1, $id_user, \PDO::PARAM_INT);
+        $query->bindParam(2, $id_task, \PDO::PARAM_INT);
+        
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+        
+        return true;
+    }
+
     private function getIdFromTable($idName, $table, $colName, $value) {
         $query = $this->db->prepare("SELECT $idName FROM $table WHERE $colName = ?");
         $query->bindParam(1, $value, \PDO::PARAM_STR);

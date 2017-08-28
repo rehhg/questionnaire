@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Services\TaskService;
 use App\Models\Task;
-use App\Core\App;
 
 class TaskController extends BaseController {
     
@@ -25,10 +24,14 @@ class TaskController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function createAction() {
+        
+        // get all users for assign
+        $this->service->getAllUsersForAssign();
+
         if (!empty($_POST)) {
             $task = new Task($_POST);
             $errors = $this->validate($task);
-            
+
             if(empty($errors)){
                 return $this->service->createTask($task);
             } else {
@@ -42,6 +45,10 @@ class TaskController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function updateAction($id) {
+        
+        // get all users for assign
+        $this->service->getAllUsersForAssign();
+        
         $idTask = intval($id);
         $taskToUpdate = $this->service->getTask($idTask);
 
@@ -83,6 +90,14 @@ class TaskController extends BaseController {
         }
         
         return $errors;
+    }
+    
+    /**
+     * @template "Task/taskslist.twig"
+     * @method "GET"
+     */
+    public function statusAction($val, $id) {
+        $this->service->changeStatus($val, $id) ? $this->redirect("/taskslist") : false;
     }
     
 }
