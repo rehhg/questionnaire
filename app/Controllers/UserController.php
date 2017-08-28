@@ -43,27 +43,6 @@ class UserController extends BaseController {
         setcookie('user', null, -1);
         header("Location: /");
     }
-    
-    /**
-     * @template "User/get.twig"
-     * @method "GET"
-     */
-    public function getAction($id) {
-        return [
-            "id" => $id
-        ];
-    }
-
-    /**
-     * @template "User/filter.twig"
-     * @method ["GET", "POST"]
-     */
-    public function filterAction($email, $role) {
-        return [
-            "email" => $email,
-            "role" => $role
-        ];
-    }
 
     /**
      * @template "User/userslist.twig"

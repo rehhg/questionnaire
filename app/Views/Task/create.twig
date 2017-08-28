@@ -2,7 +2,7 @@
 {% extends "templates/createtask.twig" %}
 
 {% block content %}
-
+    
     <div class="col-md-8">
         <div class="content-box-large">
             <div class="panel-heading">
@@ -12,13 +12,13 @@
                 <form action="" method="POST">
                     <fieldset>
                         
-                        {% if data is object %}
+                        {% if data.task is object %}
                             <div class="alert alert-success">
                                 You successfully created a new task!
                             </div>
-                        {% elseif data != null %}
+                        {% elseif data.errors != null %}
                             <div class="alert alert-danger">
-                                {% for item in data %}
+                                {% for item in data.errors %}
                                     {{ item }}.<br />
                                 {% endfor %}
                             </div>
@@ -45,7 +45,7 @@
                             </div>
                             <div class="form-group pull-left col-sm-10">
                                 <label>Task Type*</label>
-                                <div class="bfh-selectbox" data-name="tasktype" data-value="{{ post.tasktype ? post.tasktype : "Urgent"  }}" data-filter="true">
+                                <div class="bfh-selectbox" data-name="tasktype" data-value="{{ post.tasktype ? post.tasktype : "Urgent" }}" data-filter="true">
                                     <div data-value="Urgent">Urgent</div>
                                     <div data-value="High">High</div>
                                     <div data-value="Standart">Standart</div>
@@ -56,13 +56,22 @@
                             </div>
                             <div class="form-group pull-left col-sm-10">
                                 <label>Department*</label>
-                                <div class="bfh-selectbox" data-name="department" data-value="{{ post.department ? post.department : "HR"  }}" data-filter="true">
+                                <div class="bfh-selectbox" data-name="department" data-value="{{ post.department ? post.department : "HR" }}" data-filter="true">
                                     <div data-value="HR">HR</div>
                                     <div data-value="Development">Development</div>
                                     <div data-value="Delivery">Delivery</div>
                                     <div data-value="Testing">Testing</div>
                                     <div data-value="English Department">English Department</div>
                                     <div data-value="Training Center">Training Center</div>
+                                </div>
+                            </div>
+                            <div class="form-group pull-left col-sm-10">
+                                <label>Assign employee*</label>
+                                <div class="bfh-selectbox" data-name="assign" data-value="{{ post.assign ? post.assign : "" }}" data-filter="true">
+                                    
+                                    {% for item in data.users %}
+                                    <div data-value="{{ item.id_user }}">{{ item.firstname }} {{ item.lastname }}</div>
+                                    {% endfor %}
                                 </div>
                             </div>
                     </fieldset>
