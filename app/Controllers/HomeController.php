@@ -3,13 +3,17 @@
 namespace App\Controllers;
 
 use App\Services\UserService;
+use App\Core\Auth;
 
 class HomeController extends BaseController {
     
     private $userService;
+    private $auth;
     
     public function __construct() {
         $this->userService = new UserService('dev');
+        $this->auth = new Auth();
+        $this->auth->checkIfUserLogIn();
     }
     
     /**
@@ -17,12 +21,10 @@ class HomeController extends BaseController {
      * @method ["GET"]
      */
     public function indexAction() {
-        !isset($_COOKIE['user']) ? $this->redirect('/login') : true;
-        
-        $userRole = $this->userService->identifyUser()->data[0]['user_role'];
+        $this->auth->userRole();
 
         return [
-            'role' => $userRole
+            
         ];
     }
     

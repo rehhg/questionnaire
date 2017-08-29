@@ -52,7 +52,7 @@
             <div class="content-box-large">
                 <div class="panel-heading">
                     <div class="panel-title">Tasks list</div>
-                    {% if data.role != 'Employee' %}
+                    {% if role != 'Employee' %}
                     <div class="panel-options">
                         <a href="/task/create"><button class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span> NEW TASK</button>
@@ -69,7 +69,7 @@
                                 <th>Type</th>
                                 <th>Department</th>
                                 <th></th>
-                                {% if data.role != 'Employee' %}
+                                {% if role != 'Employee' %}
                                 <th></th>
                                 <th></th>
                                 {% endif %}
@@ -112,7 +112,7 @@
                             </div>
                         </div>
 
-                        {% if data.role != 'Employee' %}
+                        {% if role != 'Employee' %}
                         <td>
                             <a href="{{ urlPlusId('/task/delete', item.id_task) }}" onclick="return confirm('Do you really want to delete this task?')">
                                 <i class="glyphicon glyphicon-trash"></i>

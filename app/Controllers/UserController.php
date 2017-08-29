@@ -53,11 +53,10 @@ class UserController extends BaseController {
      * @method "GET"
      */
     public function listAction() {
-        $userRole = $this->auth->restrictRightsEmployeeManager();
+        $this->auth->restrictRights();
         
         return [
-            'users' => $this->service->getAllUsers(),
-            'role' => $userRole
+            'users' => $this->service->getAllUsers()
         ];
     }
 
@@ -66,7 +65,7 @@ class UserController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function createAction() {
-        $userRole = $this->auth->restrictRightsEmployeeManager();
+        $this->auth->restrictRights();
         
         if (!empty($_POST)) {
             $user = new User($_POST);
@@ -74,8 +73,7 @@ class UserController extends BaseController {
                     
             if(empty($errors)){
                 return [
-                    'user' => $this->service->createUser($user),
-                    'role' => $userRole
+                    'user' => $this->service->createUser($user)
                 ];
             } else {
                 return $errors;
@@ -88,7 +86,7 @@ class UserController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function updateAction($id) {
-        $userRole = $this->auth->restrictRightsEmployeeManager();
+        $this->auth->restrictRights();
         
         $idUser = intval($id);
         $userToUpdate = $this->service->getUser($idUser);
@@ -107,8 +105,7 @@ class UserController extends BaseController {
 
             if(empty($errors)) {
                 return [
-                    'user' => $this->service->updateUser($userToUpdate),
-                    'role' => $userRole
+                    'user' => $this->service->updateUser($userToUpdate)
                 ];
             } else {
                 $userToUpdate->errors = $errors;
@@ -116,8 +113,7 @@ class UserController extends BaseController {
         }
 
         return [
-            'user' => $userToUpdate,
-            'role' => $userRole
+            'user' => $userToUpdate
         ];
     }
 
@@ -125,7 +121,7 @@ class UserController extends BaseController {
      * @method "GET"
      */
     public function deleteAction($id) {
-        $this->auth->restrictRightsEmployeeManager();
+        $this->auth->restrictRights();
         
         $idUser = intval($id);
         $errors = [];

@@ -135,8 +135,12 @@ class TaskService extends Service {
         if(!$query->execute()) {
             throw new PDOException($this->getDbError($query));
         }
+        $data['assign'] = $query->fetchAll(\PDO::FETCH_ASSOC);
         
-        return $query->fetchAll(\PDO::FETCH_ASSOC);
+        $data['departments'] = $this->getAllDepartments();
+        $data['types'] = $this->getAllTypes();
+        
+        return $data;
     }
     
     private function getAllUsersFromUsersTasks($id_task) {
@@ -157,6 +161,24 @@ class TaskService extends Service {
         $data['status'] = $query->fetchColumn();
         
         return $data;
+    }
+    
+    private function getAllDepartments() {
+        $query = $this->db->prepare("SELECT * FROM department");
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+        
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    private function getAllTypes() {
+        $query = $this->db->prepare("SELECT * FROM task_type");
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+        
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     public function changeStatus($val, $id_task) {

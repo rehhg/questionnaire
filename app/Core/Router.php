@@ -4,12 +4,14 @@ namespace App\Core;
 
 use App\Config\Exception404;
 use App\Config\Exception405;
+use App\Core\Auth;
 
 class Router {
 
     const CONTROLLERS_DIR = '/app/Controllers/';
     const CONTROLLERS_DIR_NAMESPACE = "\\App\\Controllers\\";
 
+    private $auth;
     private $data;
     private $routes;
     private $internalRoute;
@@ -20,6 +22,7 @@ class Router {
     public function __construct() {
         $routesPath = App::getRootPath() . '/app/Config/routes.php';
         $this->routes = include($routesPath);
+        $this->auth = new Auth();
     }
 
     /**
@@ -64,7 +67,7 @@ class Router {
             if (Router::annotationReader($this->controllerFullName, $this->actionName)) {
                 $this->data = call_user_func_array(array($controllerObject, $this->actionName), $this->parameters);
             }
-
+            
             return $this->data;
         }
     }
@@ -99,7 +102,7 @@ class Router {
 
     private function getTemplate($data) {
         $this->data = $data;
-
+        
         $reader = new \DocBlockReader\Reader($this->controllerFullName, $this->actionName);
         $template = $reader->getParameter("template");
 
@@ -123,7 +126,9 @@ class Router {
         
         echo $twig->render($template, array(
             "data" => $data,
-            "post" => $_POST
+            "post" => $_POST,
+            'role' => $_SESSION['role'],
+            'roles' => $this->auth->getAllRoles()
             ));
     }
 
@@ -136,13 +141,14 @@ class Router {
         
         //Check for this request in routes.php
         foreach ($this->routes as $uriPattern => $path) {
+            $path = $path['action'];
             
             if($result = $this->searchUriRequest($uriPattern, $uri, $path)) {
                  break;
 
             }
         }
-
+        
         if (!isset($this->internalRoute)) {
             throw new Exception404("Get 404.");
         } else {

@@ -54,7 +54,7 @@ class UserService extends Service {
             $user = new User($value);
             $users[] = $user;
         }
-
+        
         return $users;
     }
 

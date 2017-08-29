@@ -61,7 +61,7 @@
 		  	<div class="sidebar content-box" style="display: block;">
                 <ul class="nav">
                     <!-- Main menu -->
-                    {% if (data.role != 'Employee' and data.role != 'Manager') %}
+                    {% if (role != 'Employee' and role != 'Manager') %}
                     <li><a href="/user/userslist"><i class="glyphicon glyphicon-home"></i> Users</a></li>
                     {% endif %}
                     <li><a href="/taskslist"><i class="glyphicon glyphicon-calendar"></i> Tasks</a></li>

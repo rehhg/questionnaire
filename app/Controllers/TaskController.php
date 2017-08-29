@@ -16,6 +16,7 @@ class TaskController extends BaseController {
         $this->service = new TaskService('dev');
         $this->userService = new UserService('dev');
         $this->auth = new Auth();
+        $this->auth->checkIfUserLogIn();
     }
     
     /**
@@ -23,13 +24,10 @@ class TaskController extends BaseController {
      * @method "GET"
      */
     public function listAction() {
-        $this->auth->checkIfUserLogIn();
-        
-        $userRole = $this->auth->userRole();
+        $this->auth->restrictRights();
         
         return [
-            'tasks' => $this->service->getAllTasks(),
-            'role' => $userRole
+            'tasks' => $this->service->getAllTasks()
         ];
     }
     
@@ -38,7 +36,7 @@ class TaskController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function createAction() {
-        $userRole = $this->auth->restrictRightsEmployee();
+        $this->auth->restrictRights();
         
         // get all users for assign
         $users = $this->service->getAllUsersForAssign();
@@ -50,21 +48,18 @@ class TaskController extends BaseController {
             if(empty($errors)){
                 return [
                     'task' => $this->service->createTask($task),
-                    'users' => $users,
-                    'role' => $userRole
+                    'users' => $users
                 ];
             } else {
                 return [
                     'errors' => $errors,
-                    'users' => $users,
-                    'role' => $userRole
+                    'users' => $users
                 ];
             }
         }
         
         return [
-            'users' => $users,
-            'role' => $userRole
+            'users' => $users
         ];
     }
     
@@ -73,7 +68,7 @@ class TaskController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function updateAction($id) {
-        $userRole = $this->auth->restrictRightsEmployee();
+        $this->auth->restrictRights();
         
         // get all users for assign
         $users = $this->service->getAllUsersForAssign();
@@ -91,8 +86,7 @@ class TaskController extends BaseController {
             if(empty($errors)) {
                 return [
                     'task' => $this->service->updateTask($taskToUpdate),
-                    'users' => $users,
-                    'role' => $userRole
+                    'users' => $users
                 ];
             } else {
                 $taskToUpdate->errors = $errors;
@@ -101,8 +95,7 @@ class TaskController extends BaseController {
         
         return [
             'task' => $taskToUpdate,
-            'users' => $users,
-            'role' => $userRole
+            'users' => $users
         ];
     }
     
@@ -110,7 +103,7 @@ class TaskController extends BaseController {
      * @method "GET"
      */
     public function deleteAction($id) {
-        $this->auth->restrictRightsEmployee();
+        $this->auth->restrictRights();
         
         $idTask = intval($id);
         $errors = [];

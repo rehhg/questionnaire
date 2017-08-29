@@ -46,30 +46,24 @@
                             <div class="form-group pull-left col-sm-10">
                                 <label>Task Type*</label>
                                 <div class="bfh-selectbox" data-name="tasktype" data-value="{{ post.tasktype ? post.tasktype : "Urgent" }}" data-filter="true">
-                                    <div data-value="Urgent">Urgent</div>
-                                    <div data-value="High">High</div>
-                                    <div data-value="Standart">Standart</div>
-                                    <div data-value="Minor">Minor</div>
-                                    <div data-value="Low Priority">Low Priority</div>
-                                    <div data-value="Critical">Critical</div>
+                                    {% for item in data.users.types %}
+                                    <div data-value="{{ item.type }}">{{ item.type }}</div>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div class="form-group pull-left col-sm-10">
                                 <label>Department*</label>
                                 <div class="bfh-selectbox" data-name="department" data-value="{{ post.department ? post.department : "HR" }}" data-filter="true">
-                                    <div data-value="HR">HR</div>
-                                    <div data-value="Development">Development</div>
-                                    <div data-value="Delivery">Delivery</div>
-                                    <div data-value="Testing">Testing</div>
-                                    <div data-value="English Department">English Department</div>
-                                    <div data-value="Training Center">Training Center</div>
+                                    {% for item in data.users.departments %}
+                                    <div data-value="{{ item.department }}">{{ item.department }}</div>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div class="form-group pull-left col-sm-10">
                                 <label>Assign employee*</label>
                                 <div class="bfh-selectbox" data-name="assign" data-value="{{ post.assign ? post.assign : "" }}" data-filter="true">
                                     
-                                    {% for item in data.users %}
+                                    {% for item in data.users.assign %}
                                     <div data-value="{{ item.id_user }}">{{ item.firstname }} {{ item.lastname }}</div>
                                     {% endfor %}
                                 </div>
