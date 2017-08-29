@@ -2,14 +2,18 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Models\User;
 use App\Validators\UserValidator;
 use App\Services\UserService;
 
 class UserController extends BaseController {
+    
+    private $auth;
 
     public function __construct() {
         $this->service = new UserService('dev');
+        $this->auth = new Auth();
     }
     
     /**
@@ -21,14 +25,14 @@ class UserController extends BaseController {
             $user = new User($_POST);
             $errors = UserValidator::validateAuth($user);
             
-            $userData = $this->userService->checkIfUserExist($user);
+            $userData = $this->service->checkIfUserExist($user);
             
             if(!$userData) {
                 $errors[] = 'There are no user with this username and password';
             } 
             
             if(empty($errors)) {
-                $this->userService->auth($userData);
+                $this->service->auth($userData);
                 header('Location: /');
             }
             
@@ -49,7 +53,12 @@ class UserController extends BaseController {
      * @method "GET"
      */
     public function listAction() {
-        return $this->service->getAllUsers();
+        $userRole = $this->auth->restrictRightsEmployeeManager();
+        
+        return [
+            'users' => $this->service->getAllUsers(),
+            'role' => $userRole
+        ];
     }
 
     /**
@@ -57,12 +66,17 @@ class UserController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function createAction() {
+        $userRole = $this->auth->restrictRightsEmployeeManager();
+        
         if (!empty($_POST)) {
             $user = new User($_POST);
             $errors = $this->validate($user);
                     
             if(empty($errors)){
-                return $this->service->createUser($user);
+                return [
+                    'user' => $this->service->createUser($user),
+                    'role' => $userRole
+                ];
             } else {
                 return $errors;
             }
@@ -74,6 +88,8 @@ class UserController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function updateAction($id) {
+        $userRole = $this->auth->restrictRightsEmployeeManager();
+        
         $idUser = intval($id);
         $userToUpdate = $this->service->getUser($idUser);
         
@@ -90,19 +106,27 @@ class UserController extends BaseController {
             $errors = $this->validate($userToUpdate);
 
             if(empty($errors)) {
-                return $this->service->updateUser($userToUpdate);
+                return [
+                    'user' => $this->service->updateUser($userToUpdate),
+                    'role' => $userRole
+                ];
             } else {
                 $userToUpdate->errors = $errors;
             }
         }
 
-        return $userToUpdate;
+        return [
+            'user' => $userToUpdate,
+            'role' => $userRole
+        ];
     }
 
     /**
      * @method "GET"
      */
     public function deleteAction($id) {
+        $this->auth->restrictRightsEmployeeManager();
+        
         $idUser = intval($id);
         $errors = [];
         $userToDelete = $this->service->getUser($idUser);

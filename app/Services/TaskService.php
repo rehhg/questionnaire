@@ -77,13 +77,21 @@ class TaskService extends Service {
     }
     
     public function updateTask(Task $task = null) {
+        $this->updateUserInUsersTask($task);
+        
+        // get id_department
+        $id_department = $this->getIdFromTable('id_department', 'department', 'department', $task->department);
+
+        // get id_type
+        $id_type = $this->getIdFromTable('id_type', 'task_type', 'type', $task->tasktype);
+        
         $query = $this->db->prepare("UPDATE tasks SET subject = ?, description = ?, "
                 . "created_at = ?, id_department = ?, id_type = ? WHERE id_task = ?");
         $query->bindParam(1, $task->subject, \PDO::PARAM_STR);
         $query->bindParam(2, $task->description, \PDO::PARAM_STR);
         $query->bindParam(3, $task->created_at, \PDO::PARAM_STR);
-        $query->bindParam(4, $task->id_department, \PDO::PARAM_INT);
-        $query->bindParam(5, $task->id_type, \PDO::PARAM_INT);
+        $query->bindParam(4, $id_department, \PDO::PARAM_INT);
+        $query->bindParam(5, $id_type, \PDO::PARAM_INT);
         $query->bindParam(6, $task->id_task, \PDO::PARAM_INT);
         if(!$query->execute()) {
             throw new PDOException($this->getDbError($query));
@@ -94,6 +102,8 @@ class TaskService extends Service {
     }
     
     public function deleteTask(Task $task = null) {
+        $this->deleteTaskFromUsersTask($task);
+        
         $query = $this->db->prepare("DELETE FROM tasks WHERE id_task = ?");
         $query->bindParam(1, $task->id_task, \PDO::PARAM_INT);
         if(!$query->execute()) {
@@ -114,6 +124,8 @@ class TaskService extends Service {
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         
         $data['id_user'] = $this->getIdFromTable('id_user', 'users_tasks', 'id_task', $id);
+        $data['department'] = $this->getNameFromTable('department', 'department', 'id_department', $data['id_department']);
+        $data['tasktype'] = $this->getNameFromTable('type', 'task_type', 'id_type', $data['id_type']);
 
         return $data ? new Task($data) : null;
     }
@@ -164,6 +176,27 @@ class TaskService extends Service {
         }
         
         return true;
+    }
+    
+    private function deleteTaskFromUsersTask(Task $task = null) {
+        $query = $this->db->prepare("DELETE FROM users_tasks WHERE id_task = ?");
+        $query->bindParam(1, $task->id_task, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+
+        return $task;
+    }
+    
+    private function updateUserInUsersTask(Task $task = null) {
+        $query = $this->db->prepare("UPDATE users_tasks SET id_user = ? WHERE id_task = ?");
+        $query->bindParam(1, $task->assign, \PDO::PARAM_INT);
+        $query->bindParam(2, $task->id_task, \PDO::PARAM_INT);
+        if(!$query->execute()) {
+            throw new PDOException($this->getDbError($query));
+        }
+
+        return $task;
     }
 
     private function insertInformationIntoUsersTask($id_user, $id_task) {

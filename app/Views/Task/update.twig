@@ -12,9 +12,9 @@
                 <form action="" method="POST">
                     <fieldset>
                         
-                        {% if data.errors %}
+                        {% if data.task.errors %}
                             <div class="alert alert-danger">
-                                {% for item in data.errors %}
+                                {% for item in data.task.errors %}
                                     {{ item }}.<br />
                                 {% endfor %}
                             </div>
@@ -42,28 +42,28 @@
                             <div class="form-group pull-left col-sm-10">
                                 <label>Task Type*</label>
                                 <div class="bfh-selectbox" data-name="tasktype" data-value="{{ data.task.tasktype }}" data-filter="true">
-                                    <div data-value="1">Urgent</div>
-                                    <div data-value="2">High</div>
-                                    <div data-value="3">Standart</div>
-                                    <div data-value="4">Minor</div>
-                                    <div data-value="5">Low Priority</div>
-                                    <div data-value="6">Critical</div>
+                                    <div data-value="Urgent">Urgent</div>
+                                    <div data-value="High">High</div>
+                                    <div data-value="Standart">Standart</div>
+                                    <div data-value="Minor">Minor</div>
+                                    <div data-value="Low Priority">Low Priority</div>
+                                    <div data-value="Critical">Critical</div>
                                 </div>
                             </div>
                             <div class="form-group pull-left col-sm-10">
                                 <label>Department*</label>
-                                <div class="bfh-selectbox" data-name="department" data-value="{{ data.task.id_department }}" data-filter="true">
-                                    <div data-value="1">HR</div>
-                                    <div data-value="2">Development</div>
-                                    <div data-value="3">Delivery</div>
-                                    <div data-value="4">Testing</div>
-                                    <div data-value="5">English Department</div>
-                                    <div data-value="6">Training Center</div>
+                                <div class="bfh-selectbox" data-name="department" data-value="{{ data.task.department }}" data-filter="true">
+                                    <div data-value="HR">HR</div>
+                                    <div data-value="Development">Development</div>
+                                    <div data-value="Delivery">Delivery</div>
+                                    <div data-value="Testing">Testing</div>
+                                    <div data-value="English Department">English Department</div>
+                                    <div data-value="Training Center">Training Center</div>
                                 </div>
                             </div>
                             <div class="form-group pull-left col-sm-10">
                                 <label>Assign employee*</label>
-                                <div class="bfh-selectbox" data-name="assign" data-value="{{ post.assign ? post.assign : data.id_user }}" data-filter="true">
+                                <div class="bfh-selectbox" data-name="assign" data-value="{{ data.task.assign ? data.task.assign : data.task.id_user }}" data-filter="true">
                                     
                                     {% for item in data.users %}
                                     <div data-value="{{ item.id_user }}">{{ item.firstname }} {{ item.lastname }}</div>

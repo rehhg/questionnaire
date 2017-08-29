@@ -25,7 +25,7 @@ class UserService extends Service {
         return $userData ? new User($userData) : false;
     }
     
-    public function idenifyUser(){
+    public function identifyUser(){
         if(isset($_COOKIE['user'])) {
             $data = explode(".", $_COOKIE['user']);
             
@@ -33,7 +33,7 @@ class UserService extends Service {
             $result->bindParam(1, $data[1], \PDO::PARAM_STR);
             $result->execute();
         
-            $userData = $result->fetch();
+            $userData = $result->fetchAll(\PDO::FETCH_ASSOC);
             
             return $userData ? new User($userData) : false;
         }
@@ -59,7 +59,7 @@ class UserService extends Service {
     }
 
     public function createUser(User $user = null) {
-        $query = $this->db->prepare("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW(), 0)");
+        $query = $this->db->prepare("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, SHA(?), ?, NOW(), 0)");
         $query->bindParam(1, $user->firstname, \PDO::PARAM_STR);
         $query->bindParam(2, $user->lastname, \PDO::PARAM_STR);
         $query->bindParam(3, $user->email, \PDO::PARAM_STR);
