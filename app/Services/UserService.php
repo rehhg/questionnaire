@@ -18,10 +18,12 @@ class UserService extends Service {
         $result = $this->db->prepare("SELECT * FROM users WHERE username = ? AND password = SHA(?)");
         $result->bindParam(1, $user->username, \PDO::PARAM_STR);
         $result->bindParam(2, $user->password, \PDO::PARAM_STR);
-        $result->execute();
+        if(!$result->execute()) {
+            throw new PDOException($this->getDbError($result));
+        }
         
-        $userData = $result->fetch();
-        
+        $userData = $result->fetch(\PDO::FETCH_ASSOC);
+
         return $userData ? new User($userData) : false;
     }
     
