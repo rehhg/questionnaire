@@ -1,4 +1,7 @@
 <?php
+/*
+ * Hello this is comment
+ */
 session_start();
 
 require 'vendor/autoload.php';
