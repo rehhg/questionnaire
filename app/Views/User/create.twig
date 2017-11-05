@@ -11,13 +11,13 @@
                 <form action="" method="POST">
                     <fieldset>
                         
-                        {% if data is object %}
+                        {% if data.user is object %}
                             <div class="alert alert-success">
                                 You successfully created a new user!
                             </div>
-                        {% elseif data != null %}
+                        {% elseif data.errors != null %}
                             <div class="alert alert-danger">
-                                {% for item in data %}
+                                {% for item in data.errors %}
                                     {{ item }}.<br />
                                 {% endfor %}
                             </div>
@@ -50,9 +50,9 @@
                         <div class="form-group">
                             <label>User role</label>
                             <select name="user_role">
-                                <option value="Admin" {% if post.user_role == 'Admin' %} selected="selected" {% endif %}>Admin</option>
-                                <option value="Manager" {% if post.user_role == 'Manager' %} selected="selected" {% endif %}>Manager</option>
-                                <option value="Employee" {% if post.user_role == 'Employee' %} selected="selected" {% endif %}>Employee</option>
+                                {% for item in roles %}
+                                <option value="{{ item }}" {% if post.user_role == item %} selected="selected" {% endif %}>{{ item }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </fieldset>

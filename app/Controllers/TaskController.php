@@ -3,12 +3,20 @@
 namespace App\Controllers;
 
 use App\Services\TaskService;
+use App\Services\UserService;
+use App\Core\Auth;
 use App\Models\Task;
 
 class TaskController extends BaseController {
     
+    private $userService;
+    private $auth;
+    
     public function __construct() {
         $this->service = new TaskService('dev');
+        $this->userService = new UserService('dev');
+        $this->auth = new Auth();
+        $this->auth->checkIfUserLogIn();
     }
     
     /**
@@ -16,7 +24,11 @@ class TaskController extends BaseController {
      * @method "GET"
      */
     public function listAction() {
-        return $this->service->getAllTasks();
+        $this->auth->restrictRights();
+        
+        return [
+            'tasks' => $this->service->getAllTasks()
+        ];
     }
     
     /**
@@ -24,6 +36,7 @@ class TaskController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function createAction() {
+        $this->auth->restrictRights();
         
         // get all users for assign
         $users = $this->service->getAllUsersForAssign();
@@ -55,20 +68,21 @@ class TaskController extends BaseController {
      * @method ["GET", "POST"]
      */
     public function updateAction($id) {
+        $this->auth->restrictRights();
         
         // get all users for assign
         $users = $this->service->getAllUsersForAssign();
         
         $idTask = intval($id);
         $taskToUpdate = $this->service->getTask($idTask);
-
+        
         if ($taskToUpdate && !empty($_POST)) {
             foreach($_POST as $key => $value) {
                 $taskToUpdate->$key = $value;
             }
             
             $errors = $this->validate($taskToUpdate);
-
+            
             if(empty($errors)) {
                 return [
                     'task' => $this->service->updateTask($taskToUpdate),
@@ -78,7 +92,7 @@ class TaskController extends BaseController {
                 $taskToUpdate->errors = $errors;
             }
         }
-
+        
         return [
             'task' => $taskToUpdate,
             'users' => $users
@@ -89,6 +103,8 @@ class TaskController extends BaseController {
      * @method "GET"
      */
     public function deleteAction($id) {
+        $this->auth->restrictRights();
+        
         $idTask = intval($id);
         $errors = [];
         $taskToDelete = $this->service->getTask($idTask);

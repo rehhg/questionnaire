@@ -47,16 +47,18 @@
             </div>
         </div>   
     </div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row" style="margin-left: 215px;">
+        <div class="col-md-8">
             <div class="content-box-large">
                 <div class="panel-heading">
                     <div class="panel-title">Tasks list</div>
+                    {% if role != 'Employee' %}
                     <div class="panel-options">
                         <a href="/task/create"><button class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span> NEW TASK</button>
                         </a>
                     </div>
+                    {% endif %}
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped" id="filterTable">
@@ -67,13 +69,15 @@
                                 <th>Type</th>
                                 <th>Department</th>
                                 <th></th>
+                                {% if role != 'Employee' %}
                                 <th></th>
                                 <th></th>
+                                {% endif %}
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in data %}
+                            {% for item in data.tasks %}
                             <tr>
                                 <td>{{ item.subject }}</td>
                                 <td>{{ item.created_at }}</td>
@@ -108,12 +112,14 @@
                             </div>
                         </div>
 
+                        {% if role != 'Employee' %}
                         <td>
                             <a href="{{ urlPlusId('/task/delete', item.id_task) }}" onclick="return confirm('Do you really want to delete this task?')">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
                         </td>
                         <td><a href="/task/update/{{ item.id_task }}"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                        {% endif %}
                         <td><a href="#" data-toggle="modal" data-target="#history{{ item.id_task }}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
                         
                         <div class="modal fade" id="history{{ item.id_task }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -124,7 +130,7 @@
                             </div>
                             <div class="modal-body">
                                 <ul style="list-style: none">
-                                    <li><b>Username:</b> {{ item.user.firstname }} {{ item.user.lastname }}</li>
+                                    <li><b>Assigned employee:</b> {{ item.user.firstname }} {{ item.user.lastname }}</li>
                                     <li><b>Change Date:</b> {{ item.created_at }}</li>
                                     <li><b>Status:</b> 
                                         <div class="btn-group">
