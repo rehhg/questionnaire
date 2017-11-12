@@ -1,9 +1,5 @@
 <?php
-/*
- * Hello this is comment
- * 2 commmit hello
- * 3 commit hello
- */
+
 session_start();
 
 require 'vendor/autoload.php';
