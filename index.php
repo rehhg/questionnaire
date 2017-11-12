@@ -1,12 +1,7 @@
 <?php
-/*
- * Hello this is comment
- */
+
 session_start();
 
-/*
- * require autoloader
- */
 require 'vendor/autoload.php';
 
 use App\Config\Exception404, App\Config\Exception405;
