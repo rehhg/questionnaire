@@ -1,0 +1,168 @@
+{% extends "templates/taskslist.twig" %}
+
+{% block content %}
+
+    <div class="col-md-6">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" 
+                data-target="#filter-panel" style="margin-bottom: 2px;">
+            <span class="glyphicon glyphicon-filter"></span>FILTER
+        </button>
+        <div id="filter-panel" class="collapse filter-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form class="form" role="form">
+                        <div class="form-group">
+                            <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
+                            <script>
+                                webshims.setOptions('forms-ext', {types: 'date'});
+                                webshims.polyfill('forms forms-ext');
+                            </script>
+                            <input type="date" id="dateInput"/>
+                          </div>
+                        <div class="form-group">
+                            <label class="filter-col" for="pref-search">Text:</label>
+                            <input id="nameInput" onkeyup="filterUsers()"
+                                   type="text" class="form-control input-sm" id="pref-search">
+                        </div>
+                        <div class="form-group">
+                            <label class="filter-col" for="pref-perpage">Type:</label>
+                            <select class="form-control" id="roleInput">
+                                <option value="" selected="selected"> </option>
+                                <option value="Urgent">Urgent</option>
+                                <option value="High">High</option>
+                                <option value="Standart">Standart</option>
+                                <option value="Minor">Minor</option>
+                                <option value="Low Priority">Low Priority</option>
+                                <option value="Critical">Critical</option>
+                            </select>                                
+                        </div>
+                        <div class="form-group">
+                            <button type="button" style="margin: 0 2px" 
+                                    class="btn btn-default filter-col pull-right" onclick="filterUsers()">Filter</button> 
+                            <button type="reset" style="margin: 0 2px" 
+                                    class="btn btn-default filter-col pull-right" name="reset">Reset</button> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>   
+    </div>
+    <div class="row" style="margin-left: 215px;">
+        <div class="col-md-8">
+            <div class="content-box-large">
+                <div class="panel-heading">
+                    <div class="panel-title">Tasks list</div>
+                    {% if role != 'Employee' %}
+                    <div class="panel-options">
+                        <a href="/task/create"><button class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-plus"></span> NEW TASK</button>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped" id="filterTable">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Department</th>
+                                <th></th>
+                                {% if role != 'Employee' %}
+                                <th></th>
+                                <th></th>
+                                {% endif %}
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in data.tasks %}
+                            <tr>
+                                <td>{{ item.subject }}</td>
+                                <td>{{ item.created_at }}</td>
+                                <td>{{ item.tasktype }}</td>
+                                <td>{{ item.department }}</td>
+                                <td><a href="#" data-toggle="modal" data-target="#pop-up{{ item.id_task }}"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+
+                        <div class="modal fade" id="pop-up{{ item.id_task }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Task information</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="content-box-header">
+                                                <div class="panel-title">{{ item.subject }}</div>
+                                                <div class="panel-options">
+                                                    <p data-rel="collapse">Date: {{ item.created_at }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="content-box-large box-with-header">
+                                                    {{ item.description | raw }}
+                                                <br /><br />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if role != 'Employee' %}
+                        <td>
+                            <a href="{{ urlPlusId('/task/delete', item.id_task) }}" onclick="return confirm('Do you really want to delete this task?')">
+                                <i class="glyphicon glyphicon-trash"></i>
+                            </a>
+                        </td>
+                        <td><a href="/task/update/{{ item.id_task }}"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                        {% endif %}
+                        <td><a href="#" data-toggle="modal" data-target="#history{{ item.id_task }}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+                        
+                        <div class="modal fade" id="history{{ item.id_task }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"><b>History</b></h5>
+                            </div>
+                            <div class="modal-body">
+                                <ul style="list-style: none">
+                                    <li><b>Assigned employee:</b> {{ item.user.firstname }} {{ item.user.lastname }}</li>
+                                    <li><b>Change Date:</b> {{ item.created_at }}</li>
+                                    <li><b>Status:</b> 
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown">
+                                              {{ item.user.status }} <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                              <li><a href="/task/status/1/{{ item.id_task }}">Done</a></li>
+                                              <li><a href="/task/status/2/{{ item.id_task }}">In progress</a></li>
+                                              <li><a href="/task/status/3/{{ item.id_task }}">Open</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                        
+                        </tr>
+                        
+                        {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

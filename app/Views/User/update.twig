@@ -1,0 +1,63 @@
+{% extends "templates/update.twig" %}
+
+{% block content %}
+
+    <div class="col-md-6">
+        <div class="content-box-large">
+            <div class="panel-heading">
+                <div class="panel-title">Update User</div>
+            </div>
+            <div class="panel-body">
+                <form action="" method="POST">
+                    <fieldset>
+                        {% if data.user.errors %}
+                            <div class="alert alert-danger">
+                                {% for item in data.user.errors %}
+                                    {{ item }}.<br />
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label>Username*</label>
+                            <input class="form-control" placeholder="Username" type="text" name="username" value="{{ data.user.username }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Email*</label>
+                            <input class="form-control" placeholder="Email" type="text" name="email" value="{{ data.user.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Firstname*</label>
+                            <input class="form-control" placeholder="Firstname" type="text" name="firstname" value="{{ data.user.firstname }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Lastname*</label>
+                            <input class="form-control" placeholder="Lastname" type="text" name="lastname" value="{{ data.user.lastname }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Password*</label>
+                            <input class="form-control" placeholder="Password" type="password" name="password" value="{{ data.user.password }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password*</label>
+                            <input class="form-control" placeholder="Confirm Password" type="password" name="confirm_password" value="{{ data.user.password }}">
+                        </div>
+                        <div class="form-group">
+                            <label>User role</label>
+                            <select name="user_role">
+                                {% for item in roles %}
+                                <option value="{{ item }}" {% if data.user.user_role == item %} selected="selected" {% endif %}>{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </fieldset>
+                    <div>
+                        <button class="btn btn-primary pull-right" style="margin: 0 2px">UPDATE</button>
+                        <button class="btn btn-primary pull-right" style="margin: 0 2px">CANCEL</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> 
+</div>
+ 
+{% endblock %}

@@ -1,0 +1,83 @@
+{% set title = 'Create Task' %}
+{% extends "templates/createtask.twig" %}
+
+{% block content %}
+    
+    <div class="col-md-8">
+        <div class="content-box-large">
+            <div class="panel-heading">
+                <div class="panel-title">Create New Task</div>
+            </div>
+            <div class="panel-body">
+                <form action="" method="POST">
+                    <fieldset>
+                        
+                        {% if data.task is object %}
+                            <div class="alert alert-success">
+                                You successfully created a new task!
+                            </div>
+                        {% elseif data.errors != null %}
+                            <div class="alert alert-danger">
+                                {% for item in data.errors %}
+                                    {{ item }}.<br />
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                            <div class="form-group pull-left">
+                                <label>Date*</label>
+                                <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
+                                <script>
+                                    webshims.setOptions('forms-ext', {types: 'date'});
+                                    webshims.polyfill('forms forms-ext');
+                                </script>
+                                <input type="date" class="form-control" name="created_at" value="{{ post.created_at }}" />
+                            </div>
+                            <div class="form-group col-sm-10">
+                                <label>Subject*</label>
+                                <input type="text" class="form-control" placeholder="Subject" name="subject" value="{{ post.subject }}">
+                            </div>
+                            <div class="form-group pull-left">
+                                <label>Description*</label>
+                                <div class="panel-body">
+                                    <textarea id="tinymce_basic" name="description">{{ post.description }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group pull-left col-sm-10">
+                                <label>Task Type*</label>
+                                <div class="bfh-selectbox" data-name="tasktype" data-value="{{ post.tasktype ? post.tasktype : "Urgent" }}" data-filter="true">
+                                    {% for item in data.users.types %}
+                                    <div data-value="{{ item.type }}">{{ item.type }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="form-group pull-left col-sm-10">
+                                <label>Department*</label>
+                                <div class="bfh-selectbox" data-name="department" data-value="{{ post.department ? post.department : "HR" }}" data-filter="true">
+                                    {% for item in data.users.departments %}
+                                    <div data-value="{{ item.department }}">{{ item.department }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="form-group pull-left col-sm-10">
+                                <label>Assign employee*</label>
+                                <div class="bfh-selectbox" data-name="assign" data-value="{{ post.assign ? post.assign : "" }}" data-filter="true">
+                                    
+                                    {% for item in data.users.assign %}
+                                    <div data-value="{{ item.id_user }}">{{ item.firstname }} {{ item.lastname }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                    </fieldset>
+                    <div>
+                        <button type="back" class="btn btn-primary pull-left" style="margin: 0 2px">BACK</button>
+                        <button type="submit" class="btn btn-primary pull-right" style="margin: 0 2px">CREATE</button>
+                        <button type="reset" class="btn btn-primary pull-right" style="margin: 0 2px">CANCEL</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

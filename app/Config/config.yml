@@ -1,0 +1,16 @@
+dev:
+    host:  mysql:dbname=qst;host=127.0.0.1
+    user:  root
+    pass:  123456
+test:
+    host:  mysql:dbname=questionnaire;host=127.0.0.1
+    user:  root
+    pass:  123456
+prod:
+    host:  mysql:dbname=questionnaire;host=127.0.0.1
+    user:  root
+    pass:  123456
+ut:
+    host:  mysql:dbname=test_qst;host=127.0.0.1
+    user:  root
+    pass:  123456

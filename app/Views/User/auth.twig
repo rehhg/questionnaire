@@ -1,0 +1,45 @@
+{% extends "templates/auth.twig" %}
+
+{% block content %}
+<div class="page-content container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="login-wrapper">
+                        <div class="box">
+                            <div class="content-wrap">
+                                <h6>Sign In</h6>
+                                <div class="social">
+                                    <a class="face_login" href="#">
+                                        <span class="face_icon">
+                                            <img src="public/img/facebook.png" alt="fb">
+                                        </span>
+                                        <span class="text">Sign in with Facebook</span>
+                                    </a>
+                                    <div class="division">
+                                        <hr class="left">
+                                        <span>or</span>
+                                        <hr class="right">
+                                    </div>
+                                </div>
+                                <form action="" method="POST">
+                                    {% if data %}
+                                        <div class="alert alert-danger">
+                                            {% for item in data %}
+                                                {{ item }}.<br />
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <input class="form-control" type="text" name="username" placeholder="Username">
+                                    <input class="form-control" type="password" name="password" placeholder="Password">
+                                    <div class="action">
+                                        <button class="btn btn-primary signup" type="submit" name="login">Login</button>
+                                    </div>   
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
